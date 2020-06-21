@@ -435,7 +435,7 @@ class DummyCar {
         carBump.play()
         let x = this.lane-player_X*pCorr
         let xDir = mapRange(nr, -120,120, -8999,8999)
-        let zDir = 0 // rngOf(900,1100)                    --------------------- TEST
+        let zDir = rngOf(900,1100) // 0  TEST
         this.flyDir = xDir
 
         let flyAwaaaay = this.ele.animate({
