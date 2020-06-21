@@ -611,7 +611,7 @@ let kills = 0
 let killStreak = 0
 let idCount = 0 // id of dummies
 let playerType = 0
-let countdown = 5_000//180_000
+let countdown = 60_000 // 180_000
 let streetType = rngOf(0,4,"floor")
 let first = true
 let mute = false
@@ -900,7 +900,9 @@ function coutDownAnim(t) {
     document.getElementById("startScreen").style.display = "none"
     document.getElementById("playStateNote").style.display = "none"
     let cd = document.getElementById("startCD")
-    if (!startedCd && !TEST_MODE) {
+
+    if (!startedCd && !TEST_MODE && !running) {
+
         let startI = setInterval(_=> {
             if (t === 0) {
                 cd.innerText = "RAMPAGE"
@@ -923,7 +925,9 @@ function coutDownAnim(t) {
                 fill: 'forwards'
                 })
         },t*1500)
-    } else runGame()
+
+    } else runGame() // erlaubt vorzeitiger Start
+
     playerEle.classList.remove("fadeIn")
     startedCd = true
 }
@@ -1076,14 +1080,14 @@ mnMusic.volume = 0.6
 function reduceVolume(ele,rV,t) {
     let inv = setInterval(_=> {
         if (ele.volume <= 0.2) clearInterval(inv)
-        console.log("reduceVolume -> ele.volume", ele.volume)
+        //console.log("reduceVolume -> ele.volume", ele.volume)
         ele.volume -= rV},t)
 }
 
 function increaseVolume(ele,incV,endV,t) {
     let inv = setInterval(_=> {
         if (ele.volume >= endV) clearInterval(inv)
-        console.log("reduceVolume -> ele.volume", ele.volume)
+        //console.log("reduceVolume -> ele.volume", ele.volume)
         ele.volume += incV},t)
 }
 
@@ -1140,6 +1144,7 @@ Notes:
         Class Assets = clusterFuck -< Split
             Cristalls -> 
             Pillar + Statues -> placeable random in group
+        doppel Space startet spiel
     
 */
 
