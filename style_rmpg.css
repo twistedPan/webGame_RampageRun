@@ -1,0 +1,434 @@
+/*
+BG Sprites -200 - -202 / -1000
+Street BG -500 ->
+Street -300 ->
+DummyCars 6 / -35 <-> -70
+Street BG Assets -36 <-> -80
+Car 4
+UI 10
+TitelScreen 100
+
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+    image-rendering: pixelated;
+}
+body {
+    background-color: rgb(20, 20, 20);
+}
+
+/*-----------------------------  UI  ---------------------------------*/
+
+#uiElements {
+    background-color: black;
+    height: 7%;
+    width: 100%;
+    border-bottom: blueviolet 8px groove;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+#uiElements .left {
+    text-align: center;
+}
+#uiElements .mid {
+    text-align: center;
+}
+#uiElements .right {
+    text-align: center!important;
+    left: 10%
+}
+
+.uiText {
+    /*
+    flex: 1;
+    color: rgb(22, 223, 189)
+    */
+    width: 24.99999%;  
+    color: rgb(255, 255, 255) !important;
+    font-size: 1.7em !important; 
+    font-weight: bold !important;
+}
+
+#startScreen {
+    position: absolute;
+    z-index: 2;
+    width: 100%; 
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.98);
+    /*display: none;*/
+}
+
+#gameTitle1 {
+    position: absolute;
+    left: 144px; /* 16% */
+    top: 170px;
+    display: block;
+    color: black;
+    font-size: 2.6em;
+    font-family: galaxyFont;
+    z-index: 1000;
+}
+
+#gameTitle2 {
+    position: absolute;
+    left: 186px; /* 20.7% */
+    top: 270px;
+    display: block;
+    color: black;
+    font-size: 2.6em;
+    font-family: galaxyFont;
+    z-index: 1000;
+}
+
+#playStateNote {
+    position: absolute;
+    left: 28.3%;
+    top: 73%;
+    z-index: 600;
+}
+
+#startCD {
+    position: absolute;
+    top: 260px;
+    width: 100%; 
+    text-align: center;
+    color: white;
+    font-size: 8em;
+    font-family: galaxyFont;
+    z-index: 1000;
+}
+
+.title1 {
+    position: absolute;
+    top: 10px;
+    left: 19%;
+    display: block;
+    color: black;
+    font-size: 2em;
+    letter-spacing: 10px;
+    color: white;
+}
+
+.flyingArrows {
+    position: absolute;
+    left: -1600px;
+    top: 360px;
+    color: white;
+    white-space: nowrap;
+    font-size: 2.6em;
+    font-family: galaxyFont;
+    z-index: 1000;
+    opacity: 0;
+}
+
+.controls {
+    position: absolute;
+    top: 605px;
+    z-index: 1000;
+    width: 100%;
+}
+.controls > span {
+    margin: 0 1.8%;
+    font-family: monospace;
+    font-size: 25px;
+    color: rgb(150, 150, 150);
+}
+.controls > span > span {
+    margin: 0;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* -----------------------------  GAME SCREEN  ---------------------------------*/
+
+#gameScreen {
+    position: absolute;
+    margin: auto;
+    width: 900px;
+    height: 600px;
+    background-color: black;
+    overflow: hidden;
+    clip: rect(0px, 1000px, 600px, 0px);
+
+    perspective: 110px;
+    perspective-origin: 450px 400px; /*normal: 310 / tilt: 400*/
+    /* Fluchtpunkt oben in der Mitte der Referenz-Box */
+}
+
+/* -----------------------------  PLAYER  ---------------------------------*/
+#car {
+    position: absolute;
+    top: 84%;
+    /*width: 14%;*/
+    height: auto;
+    z-index: 4
+}
+
+
+/* --------------------------  OBSTACLE CARS  ------------------------------*/
+.assets {
+    position: absolute;
+    top: 84%;
+    width: auto;
+}
+
+.ppreView {
+    position: absolute;
+    margin-left:5%;
+    top: 80px;
+    z-index: 100;
+}
+
+/* -------------------  Background Parallax Sprites ------------------- */
+/*
+#bg4 {z-index: -104;}
+#bg3 {z-index: -43;}
+#bg2 {z-index: -42;}
+#bg1 {z-index: -41;}
+*/
+/* -----------------------------  Street Sprites   ---------------------------------*/
+/*
+#streetSprites {
+    position: absolute;
+    z-index: -70;
+}
+#street1 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(0px);}
+#street2 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-200px);}
+#street3 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-400px);}
+#street4 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-600px);}
+#street5 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-800px);}
+#street6 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-1000px);}
+*/
+/* -------------------------  Street Background Sprites  ---------------------------------*/
+/*
+.streetBackgrounds {
+    position: absolute;
+    z-index: -80;
+}
+*/
+
+
+
+.halb {
+    width: 50%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.testImage {
+    position: absolute;
+    top: 70%;
+}
+
+.mario {
+    left: 10%;
+}
+.toad {
+    left: 25%;
+}
+.dk {
+    left: 40%;
+}
+
+
+
+/* #####################################################################
+// ----------------------------- Animations --------------------------
+   #####################################################################*/
+
+.fadeIn {
+    opacity: 0;
+    animation: fadeIn 5s ease 2s forwards;
+}   
+
+.synthText {
+    color: rgb(255, 255, 255);
+    /*
+    font-size: 92px;
+    text-transform: uppercase;
+    */
+    font-weight: 700;
+    background: linear-gradient(40deg, #ec0cda 1%, #fff 50%, #5b13cf 70%, #04f3f3 30%);
+    background-size: auto auto;
+    background-clip: border-box;
+    background-size: 200% auto;
+    color: rgb(0, 0, 0);
+    background-clip: text;
+    /*
+    text-fill-color: transparent;
+    */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    animation: textclip 2.45s linear infinite;
+}
+.jumpyText {
+    opacity: 0;
+    line-height: 1;
+    animation: text-shadow 7s ease-in-out infinite, fadeIn 5s ease 2s forwards;
+}
+.jumpyStartText {
+    opacity: 0;
+    line-height: 1;
+    animation: text-shadow 7s ease-in-out infinite, fadeIn 5s ease 2s forwards;
+}
+.jumpyTextAndMoving {
+    left: 500px;
+    animation: text-shadow 7s ease-in-out infinite, appearLeft 3s 0s 1;
+}
+.jumpyTextAndMovingAndFlying {
+    left: 500px;
+    animation: text-shadow 7s ease-in-out infinite, moveThrough 3s linear infinite, fadeIn 5s ease 2s forwards;
+}
+.growingText {
+    float: left;
+    animation-delay: 0s;
+    animation: popping-font 2s ease-in-out infinite;
+}
+
+.translate-it:hover,.translate {
+            transform: translate(25px, 25px);
+        }
+
+@keyframes textclip {
+	to {
+		background-position: 200% center;
+	}
+}
+
+@keyframes text-shadow {
+    0% {  
+        transform: translateY(0.025em);
+        text-shadow: 
+        0 0 0 #cb0cfb, 
+        0 0 0 #2cfcfd, 
+        0 0 0 #fb203b, 
+        0 0 0 #fefc4b;
+    }
+
+    20% {  
+        transform: translateY(-0.025em);
+        text-shadow: 
+        0 0.125em 0 #cb0cfb, 
+        0 0.25em 0 #2cfcfd, 
+        0 -0.125em 0 #fb203b, 
+        0 -0.25em 0 #fefc4b;
+    }
+
+    40% {  
+        transform: translateY(0.05em);
+        text-shadow: 
+        0 -0.0625em 0 #cb0cfb, 
+        0 -0.125em 0 #2cfcfd, 
+        0 0.0625em 0 #fb203b, 
+        0 0.125em 0 #fefc4b;
+    }
+    
+   60% {
+        transform: translateY(-0.05em);
+        text-shadow: 
+        0 0.0625em 0 #cb0cfb, 
+        0 0.125em 0 #2cfcfd, 
+        0 -0.0625em 0 #fb203b, 
+        0 -0.125em 0 #fefc4b;
+    }
+
+    80% {  
+        transform: translateY(0.025em);
+        text-shadow: 
+        0 0.125em 0 #cb0cfb, 
+        0 0.25em 0 #2cfcfd, 
+        0 -0.125em 0 #fb203b, 
+        0 -0.25em 0 #fefc4b;
+    }
+}
+
+@keyframes popping-font {
+    0% {
+        font-size: 1.4em;
+    }
+    50% {
+        font-size: 1.5em;
+    }
+    99% {
+        font-size: 1.4em;
+    }
+}
+@keyframes appearLeft {
+    from {
+        /*left: -500px;*/
+        transform: translateX(-800px);
+    }
+    to {
+        /*left: 130px;*/
+        transform: translateX(0px);
+    }
+}
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@keyframes moveThrough {
+    from {transform: translateX(-1200px);}
+    to {transform: translateX(500px);}
+}
+
+
+/*
+
+@keyframes text-shadow {
+    0% {  
+        transform: translateY(0);
+        text-shadow: 
+            0 0 0 #0c2ffb, 
+            0 0 0 #2cfcfd, 
+            0 0 0 #fb203b, 
+            0 0 0 #fefc4b;
+    }
+
+    20% {  
+        transform: translateY(-1em);
+        text-shadow: 
+            0 0.125em 0 #0c2ffb, 
+            0 0.25em 0 #2cfcfd, 
+            0 -0.125em 0 #fb203b, 
+            0 -0.25em 0 #fefc4b;
+    }
+
+    40% {  
+        transform: translateY(0.5em);
+        text-shadow: 
+            0 -0.0625em 0 #0c2ffb, 
+            0 -0.125em 0 #2cfcfd, 
+            0 0.0625em 0 #fb203b, 
+            0 0.125em 0 #fefc4b;
+    }
+    
+   60% {
+        transform: translateY(-0.25em);
+        text-shadow: 
+            0 0.03125em 0 #0c2ffb, 
+            0 0.0625em 0 #2cfcfd, 
+            0 -0.03125em 0 #fb203b, 
+            0 -0.0625em 0 #fefc4b;
+    }
+
+    80% {  
+        transform: translateY(0);
+        text-shadow: 
+            0 0 0 #0c2ffb, 
+            0 0 0 #2cfcfd, 
+            0 0 0 #fb203b, 
+            0 0 0 #fefc4b;
+    }
+}
+*/
+
+@font-face {
+    font-family: galaxyFont;
+    src: url(assets/font/GalaxyGirlSlant.otf);
+  }
