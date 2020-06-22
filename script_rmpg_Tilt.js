@@ -833,7 +833,7 @@ function showEndscreen(score,dist,kills) {
         assetContainer.style.display = "none"
         enemiesEle.style.display = "none"
         fadeInAnim(endScreen,1000) // fadeIn.play()
-        endScreen.style.backgroundImage = "url(assets/black.png)"
+        endScreen.style.backgroundImage = "url(assets/streets/black.png)"
     },1000)
 
     let rateTxt = ""
@@ -1146,6 +1146,69 @@ Notes:
             Pillar + Statues -> placeable random in group
         doppel Space startet spiel
     
+*/
+
+/*          LEARNED CORNER      */
+
+/*
+// shortand assign undefined parameters of function
+function volume(l, w = 3, h = 4 ){ 
+    return (l * w * h)
+}
+
+// can't access level in object with this
+let testObj1 = {
+    level: 1,
+    scr: [
+        'ASSETS/lvl'+this.level+'/bg(1).png',
+        'ASSETS/lvl'+this.level+'/bg(2).png',
+        'ASSETS/lvl'+this.level+'/bg(3).png',
+        'ASSETS/lvl'+this.level+'/bg(4).png',
+    ]
+}
+
+// SOLUTION
+// use a function 
+let testObj2 = {
+    level: 1,
+    src : function() {
+        return [
+            'ASSETS/lvl'+this.level+'/bg(1).png',
+            'ASSETS/lvl'+this.level+'/bg(2).png',
+            'ASSETS/lvl'+this.level+'/bg(3).png',
+            'ASSETS/lvl'+this.level+'/bg(4).png',
+        ]
+    }
+}
+
+// STREET.style.backgroundImage='url('+ASSETS.STREET.src[0]+')'
+// oder 
+// STREET.style.backgroundImage=`url(${ASSETS.STREET.src[0]})`
+// WICHTIG: `(backtick) verwenden! -> ( shift + ^ )
+
+
+// Map.forEach(console.log(function))
+// for..of ->  for (variable of iterable) console.log(variable)
+// for..in ->  for (key in object) console.log(object[key])
+
+
+//  << = Bitshifting 
+// kann verwendet werden um Zahlen zu flooren
+//  Math.random()*10 << 0
+//
+
+
+
+// RNG 
+pArr=[]; sArr=[]
+for (i=0;i<1000;i++) pArr.push(Math.random()*10 << 0)
+pArr.sort()
+for (i=0,j=0;i<pArr.length;i++,j++) {
+    sArr[i] = []
+    sArr[pArr[i]].push(pArr[j])
+}
+
+
 */
 
 
