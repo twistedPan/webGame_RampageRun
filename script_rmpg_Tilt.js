@@ -135,7 +135,7 @@ const ASSETS = {
         src: [
             {s: "assets/models/heli-hiDo.gif",         w: 100, p:10,  sp: 2},
             {s: "assets/models/heli-grey.gif",         w: 90, p:75,  sp: 3},
-            {s: "assets/models/heli-Green.gif",        w: 50,  p:100, sp: rngOf(7,10)},
+            {s: "assets/models/heli-green.gif",        w: 50,  p:100, sp: rngOf(7,10)},
             {s: "assets/models/heli-NO-shot-fast.gif", w: 80,  p:50,  sp: 3.5},
             {s: "assets/models/heli-shot-fast.gif",    w: 80,  p:50,  sp: 3.5},
             {s: "", w: 0, p: 0},
@@ -144,10 +144,10 @@ const ASSETS = {
     },
     FX: {
         src : [
-            {s: "assets/sound/fx/explosion-small.gif", w: 140},
-            {s: "assets/sound/fx/explosion-large.gif", w: 100},
-            {s: "assets/sound/fx/explosion-massive.gif", w: 100},
-            {s: "assets/sound/fx/explosion-heli-fast.gif", w: 100},
+            {s: "assets/fx/explosion-small.gif", w: 140},
+            {s: "assets/fx/explosion-large.gif", w: 100},
+            {s: "assets/fx/explosion-massive.gif", w: 100},
+            {s: "assets/fx/explosion-heli-fast.gif", w: 100},
         ],
     },
 }
