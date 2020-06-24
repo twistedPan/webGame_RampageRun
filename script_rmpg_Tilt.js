@@ -203,13 +203,6 @@ let player = {
             w: 80,
         },
     ],
-    spriteS: "assets/models/player_straight.png",
-    spriteL: "assets/models/player_left.png",
-    spriteR: "assets/models/player_right.png",
-    moveLeft: false,
-    moveRight: false,
-    moveStraight: false,
-    speedUp: false,
     width: playerEle.width,
     hW: playerEle.width/2,
     mid : halfWidth - playerEle.width/2,
@@ -217,12 +210,6 @@ let player = {
 }
 
 const ASSETS = {
-    PLAYER: {
-        src: [
-            "assets/models/SS-player.png",
-        ],
-        size: {w:80,h:41}, // Player org
-    },
     STREET: {
         src: [
             "assets/street/street-p.png",
@@ -251,14 +238,10 @@ const ASSETS = {
             "assets/models/dummyCar3.png",
             "assets/models/dummyCar4.png",
             "assets/models/dummyCar5.png",
-        ],
-        size: {w:126, h:80}, // org 300,241
-    },
-    DUMMYSPEC: {
-        src: [
-            "assets/models/smKart-mario-s.png",
-            "assets/models/smKart-dk-s.png",
-            "assets/models/smKart-toad-s.png",
+            "assets/models/dummyDD.png",
+            "assets/models/dummyMario.png",
+            "assets/models/dummyToad.png",
+            "assets/models/dummyDK.png",
         ],
         size: {w:126, h:80}, // org 300,241
     },
@@ -407,14 +390,8 @@ class DummyCar {
     }
 
     respawn() {
-        if (Math.random()>0.8) {
-            this.ele.src = rngProperty(this.path)
-
-        }
-        else { // spawn Mario
-            this.ele.src = rngProperty(ASSETS.DUMMYSPEC.src,5)
-
-        } 
+        if (Math.random()>0.8) this.ele.src = rngProperty(this.path) // spawn Spec
+        else this.ele.src = rngProperty(this.path,5) // spawn car
         this.lane = rngProperty(lane,2) - this.hW
         this.speed = rngOf(2,6)
         this.ele.style.display = "block"
@@ -620,7 +597,7 @@ let kills = 0
 let killStreak = 0
 let idCount = 0 // id of dummies
 let playerType = 0
-let countdown = 60_000 // 180_000
+let countdown = 120_000 // 180_000
 let streetType = rngOf(0,4,"floor")
 let first = true
 let mute = false
@@ -1149,6 +1126,7 @@ Notes:
         univers galaxy - ??? big unknown
         feuerräder burning street
         Helicopter shots
+        mehr variationen von dummies
         
     To fix:
         Datei namen auf gross und klein schreibung überprüfen!!!
@@ -1170,6 +1148,7 @@ Notes:
 function volume(l, w = 3, h = 4 ){ 
     return (l * w * h)
 }
+
 
 // can't access level in object with this
 let testObj1 = {
@@ -1228,7 +1207,7 @@ for (i=0,j=0;i<pArr.length;i++,j++) {
 */
 
 
-const TEST_MODE = true
+const TEST_MODE = false
 if (TEST_MODE) {
     document.getElementById("test").style.display = "block"
     document.getElementById("startScreen").style.display = "none"
