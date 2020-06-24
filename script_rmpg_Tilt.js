@@ -55,103 +55,6 @@ const playField = [-2000,2000]    // outer boundaries
 const timestamp = _ => new Date().getTime()
 const targetFrameRate = 1000 / 25 // in ms
 
-const ASSETS = {
-    PLAYER: {
-        src: [
-            "assets/models/SS-player.png",
-        ],
-        size: {w:80,h:41}, // Player org
-    },
-    STREET: {
-        src: [
-            "assets/street/street-p.png",
-            "assets/street/street-b.png",
-            "assets/street/street-g.png",
-            "assets/street/street-rp.png",
-            "assets/street/street-o.png",
-            //"assets/street/.png",
-        ]
-    },
-    STREET_BG: {
-        src: [
-            "assets/street/grid_v.png",
-            "assets/street/grid_b.png",
-            "assets/street/grid_g.png",
-            "assets/street/grid_r.png",
-            "assets/street/blocks_1.jpg",
-            "assets/street/blocks_2.jpg",
-            "assets/street/blocks_3.jpg",
-        ]
-    },    
-    DUMMYCAR: {
-        src: [
-            "assets/models/dummyCar1.png",
-            "assets/models/dummyCar2.png",
-            "assets/models/dummyCar3.png",
-            "assets/models/dummyCar4.png",
-            "assets/models/dummyCar5.png",
-            "assets/models/smKart_Mario-S.png",
-            "assets/models/smKart_DK-S.png",
-            "assets/models/smKart_toad-S.png",
-        ],
-        size: {w:126, h:80}, // org 300,241
-    },
-    SMK: {
-        src: [
-            "assets/sprites/SS-smKart_Mario.png",
-            "assets/sprites/SS-smKart_Toad.png",
-            "assets/sprites/SS-smKart_DK.png",
-            "assets/models/smKart_toad-S.png",
-        ],
-        size: {w:84,h:90} // org 28,30
-    },
-    SIDE_OBJ: {
-        src: [
-            "assets/env/crystall_1L.png",
-            "assets/env/crystall_1R.png",
-            "/assets/env/statue1.gif",
-            "/assets/env/statue2.gif",
-            "/assets/env/pillar_b.png",
-            "/assets/env/pillar_g.png",
-            "/assets/env/pillar_o.png",
-            "/assets/env/pillar_p.png",
-            "/assets/env/pillar_w.png",
-            //"assets/street/crystall_test.png",
-        ],
-        size: {w:300,h:400}, // org crystall 2000,2000
-    },
-    BG_IMAGE: {
-        level: 1,
-        src : function() {
-            return [
-                'assets/lvl'+this.level+'/bg_1-tilt.png',
-                'assets/lvl'+this.level+'/bg_2-tilt.png',
-                'assets/lvl'+this.level+'/bg_3.png',
-                'assets/lvl'+this.level+'/bg_4.png',
-            ]
-        }
-    },
-    ENEMIES: {
-        src: [
-            {s: "assets/models/heli-hiDo.gif",         w: 100, p:10,  sp: 2},
-            {s: "assets/models/heli-grey.gif",         w: 90, p:75,  sp: 3},
-            {s: "assets/models/heli-green.gif",        w: 50,  p:100, sp: rngOf(7,10)},
-            {s: "assets/models/heli-NO-shot-fast.gif", w: 80,  p:50,  sp: 3.5},
-            {s: "assets/models/heli-shot-fast.gif",    w: 80,  p:50,  sp: 3.5},
-            {s: "", w: 0, p: 0},
-        ]
-        
-    },
-    FX: {
-        src : [
-            {s: "assets/fx/explosion-small.gif", w: 140},
-            {s: "assets/fx/explosion-large.gif", w: 100},
-            {s: "assets/fx/explosion-massive.gif", w: 100},
-            {s: "assets/fx/explosion-heli-fast.gif", w: 100},
-        ],
-    },
-}
-
 // ##############################################################################
 // -----------------------------  Window on load  -----------------------------
 // ##############################################################################
@@ -159,13 +62,13 @@ window.onload = function() {
     if(!TEST_MODE) setTimeout(_=> mnMusic.play(), 1500)
 
     if (TEST_MODE) {
-        dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCAR,4)) // rngOf(100,300)
-        dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCAR,2))
-        dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCAR))
-        dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCAR))
-        dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCAR))
+        dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
+        dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
+        dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
     } else
-        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCAR))
+        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
     
     dummys.forEach(d => {d.ele.style.transform = 
         `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
@@ -258,39 +161,39 @@ let player = {
             w: 126,
         },
         {
-            s: "assets/models/player-p-strgt.png",
+            s: "assets/models/player-p-straight.png",
             l: "assets/models/player-p-left.png",
             r: "assets/models/player-p-right.png",
             w: 126,
         },
         {
-            s: "assets/models/player-y-strgt.png",
+            s: "assets/models/player-y-straight.png",
             l: "assets/models/player-y-left.png",
             r: "assets/models/player-y-right.png",
             w: 126,
         },
         {
-            s: "assets/models/smKart_Mario-S.png",
-            l: "assets/models/smKart_Mario-L.png",
-            r: "assets/models/smKart_Mario-R.png",
+            s: "assets/models/smKart-mario-s.png",
+            l: "assets/models/smKart-mario-l.png",
+            r: "assets/models/smKart-mario-r.png",
             w: 66,
         },
         {
-            s: "assets/models/smKart_Toad-S.png",
-            l: "assets/models/smKart_Toad-L.png",
-            r: "assets/models/smKart_Toad-R.png",
+            s: "assets/models/smKart-toad-s.png",
+            l: "assets/models/smKart-toad-l.png",
+            r: "assets/models/smKart-toad-r.png",
             w: 66,
         },
         {
-            s: "assets/models/smKart_DK-S.png",
-            l: "assets/models/smKart_DK-L.png",
-            r: "assets/models/smKart_DK-R.png",
+            s: "assets/models/smKart-dk-s.png",
+            l: "assets/models/smKart-dk-l.png",
+            r: "assets/models/smKart-dk-r.png",
             w: 66,
         },
         {
-            s: "assets/models/ss-bowser-straight.png",
-            l: "assets/models/ss-bowser-left.png",
-            r: "assets/models/ss-bowser-right.png",
+            s: "assets/models/bowser-s.png",
+            l: "assets/models/bowser-l.png",
+            r: "assets/models/bowser-r.png",
             w: 66,
         },
         {
@@ -313,6 +216,106 @@ let player = {
     collision: false,
 }
 
+const ASSETS = {
+    PLAYER: {
+        src: [
+            "assets/models/SS-player.png",
+        ],
+        size: {w:80,h:41}, // Player org
+    },
+    STREET: {
+        src: [
+            "assets/street/street-p.png",
+            "assets/street/street-b.png",
+            "assets/street/street-g.png",
+            "assets/street/street-rp.png",
+            "assets/street/street-o.png",
+            //"assets/street/.png",
+        ]
+    },
+    STREET_BG: {
+        src: [
+            "assets/street/grid_v.png",
+            "assets/street/grid_b.png",
+            "assets/street/grid_g.png",
+            "assets/street/grid_r.png",
+            "assets/street/blocks_1.jpg",
+            "assets/street/blocks_2.jpg",
+            "assets/street/blocks_3.jpg",
+        ]
+    },    
+    DUMMYCHAR: {
+        src: [
+            "assets/models/dummyCar1.png",
+            "assets/models/dummyCar2.png",
+            "assets/models/dummyCar3.png",
+            "assets/models/dummyCar4.png",
+            "assets/models/dummyCar5.png",
+        ],
+        size: {w:126, h:80}, // org 300,241
+    },
+    DUMMYSPEC: {
+        src: [
+            "assets/models/smKart-mario-s.png",
+            "assets/models/smKart-dk-s.png",
+            "assets/models/smKart-toad-s.png",
+        ],
+        size: {w:126, h:80}, // org 300,241
+    },
+    SMK: {
+        src: [
+            "assets/sprites/ss-smKart-mario.png",
+            "assets/sprites/ss-smKart-toad.png",
+            "assets/sprites/ss-smKart-dk.png",
+        ],
+        size: {w:84,h:90} // org 28,30
+    },
+    SIDE_OBJ: {
+        src: [
+            "assets/env/crystall_1L.png",
+            "assets/env/crystall_1R.png",
+            "/assets/env/statue1.gif",
+            "/assets/env/statue2.gif",
+            "/assets/env/pillar_b.png",
+            "/assets/env/pillar_g.png",
+            "/assets/env/pillar_o.png",
+            "/assets/env/pillar_p.png",
+            "/assets/env/pillar_w.png",
+            //"assets/street/crystall_test.png",
+        ],
+        size: {w:300,h:400}, // org crystall 2000,2000
+    },
+    BG_IMAGE: {
+        level: 1,
+        src : function() {
+            return [
+                'assets/lvl'+this.level+'/bg_1-tilt.png',
+                'assets/lvl'+this.level+'/bg_2-tilt.png',
+                'assets/lvl'+this.level+'/bg_3.png',
+                'assets/lvl'+this.level+'/bg_4.png',
+            ]
+        }
+    },
+    ENEMIES: {
+        src: [
+            {s: "assets/models/heli-hiDo.gif",         w: 100, p:10,  sp: 2},
+            {s: "assets/models/heli-grey.gif",         w: 90, p:75,  sp: 3},
+            {s: "assets/models/heli-green.gif",        w: 50,  p:100, sp: rngOf(7,10)},
+            {s: "assets/models/heli-fast.gif",         w: 80,  p:50,  sp: 3.5},
+            {s: "assets/models/heli-shot-fast.gif",    w: 80,  p:50,  sp: 3.5},
+            {s: "", w: 0, p: 0},
+        ]
+        
+    },
+    FX: {
+        src : [
+            {s: "assets/fx/explosion-small.gif", w: 140},
+            {s: "assets/fx/explosion-large.gif", w: 100},
+            {s: "assets/fx/explosion-massive.gif", w: 100},
+            {s: "assets/fx/explosion-heli-fast.gif", w: 100},
+        ],
+    },
+}
 class Asset {
     constructor(_posZ, _lane, _asset, _type) {
         this.pos_Z = _posZ
@@ -404,8 +407,14 @@ class DummyCar {
     }
 
     respawn() {
-        if (Math.random()>0.8) this.ele.src = rngProperty(this.path)
-        else this.ele.src = rngProperty(this.path,5) // spawn Mario
+        if (Math.random()>0.8) {
+            this.ele.src = rngProperty(this.path)
+
+        }
+        else { // spawn Mario
+            this.ele.src = rngProperty(ASSETS.DUMMYSPEC.src,5)
+
+        } 
         this.lane = rngProperty(lane,2) - this.hW
         this.speed = rngOf(2,6)
         this.ele.style.display = "block"
@@ -441,7 +450,7 @@ class DummyCar {
         let flyAwaaaay = this.ele.animate({
             transform: [ 
                 `translate3D(${x}px, 0px, ${this.pos_Z}px) rotateZ(${0}deg)`,
-                `translate3D(${x+xDir}px, -5000px, ${this.pos_Z-zDir}px) rotateZ(${rngOf(500,1500)}deg)`
+                `translate3D(${x+xDir}px, -8500px, ${this.pos_Z-zDir}px) rotateZ(${rngOf(500,1500)}deg)`
             ],
             opacity: [1, 0]}, {
             direction: 'alternate',
@@ -542,7 +551,7 @@ class Enemy {
         //let xCorr = Math.cos(Math.acos(hitMap/Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2))) * this.y
         let xCorr = (hitMap-halfWidth)/(Math.sqrt((Math.pow((hitMap-halfWidth),2)+Math.pow(450,2)),2)) * this.y
         // KLAPPT DAS SO ?????
-        // z der autos wird nicht miteingerechnet
+        // z der autos wird nicht miteingerechnet / wo ist y? -8500px
 
         //console.log("Nr",this.nr,"- hitMap:",hitMap, "\nposX: ", this.x, " lX",this.x-this.hW," rX: ",this.x+this.width)
         if (hitMap-xCorr >= this.x-this.hW && hitMap-xCorr <= this.x+this.hW && !this.hit) {
@@ -1134,11 +1143,17 @@ function fadeInAnim(ele,ms) {
 Notes:
     
     To implement:
-        Bremsspuren
-        Helicopter shots
         Tilt => Collision fail
-
-    To fix
+        point progrss an Hintergrund hängen
+        -> synthwave - hirulecaste - mushroom Kingdom  lylatwars - 
+        univers galaxy - ??? big unknown
+        feuerräder burning street
+        Helicopter shots
+        
+    To fix:
+        Datei namen auf gross und klein schreibung überprüfen!!!
+            -> alles klein mit '-' ???
+        Audio failed because the user didn't interact with the document first.
         Countdown läuft weiter wenn stop ( DONE )
         Countdown nicht in sekunden 
         Class Assets = clusterFuck -< Split
@@ -1197,7 +1212,8 @@ let testObj2 = {
 //  Math.random()*10 << 0
 //
 
-
+.then(_=>{}) für function callbacks
+    -> doThis().then(_=>{doThat()}).then(_=>{stopDoingThis()})
 
 // RNG 
 pArr=[]; sArr=[]
@@ -1212,7 +1228,7 @@ for (i=0,j=0;i<pArr.length;i++,j++) {
 */
 
 
-const TEST_MODE = false
+const TEST_MODE = true
 if (TEST_MODE) {
     document.getElementById("test").style.display = "block"
     document.getElementById("startScreen").style.display = "none"
