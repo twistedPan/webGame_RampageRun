@@ -1144,7 +1144,7 @@ Notes:
         Datei namen auf gross und klein schreibung überprüfen!!! ( DONE )
             -> alles klein mit '-' ???
         Audio failed because the user didn't interact with the document first. ( DONE )
-        doppel Space startet spiel
+        doppel Space startet spiel ( DONE )
         Countdown läuft weiter wenn stop ( DONE )
         Countdown nicht in sekunden  
         Class Assets = clusterFuck -< Split
