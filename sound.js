@@ -25,6 +25,7 @@ const SOUND = {
         "assets/sound/fx/Mario-SuperJump.wav",
         "assets/sound/fx/synthclick.mp3",
         "assets/sound/fx/reaggehorn.mp3",
+        "assets/sound/fx/Whoosher.wav",
         "assets/sound/voice/thisethan.mp3",
     ],
     music: [
@@ -46,6 +47,7 @@ class Sound {
         this.source.buffer = this.buffer;
         this.source.connect(this.gainNode);
         this.gainNode.connect(this.context.destination);
+        this.gainNode.gain.volume = 0.1
     }
     play() {
         this.setup();

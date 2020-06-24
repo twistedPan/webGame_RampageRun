@@ -152,11 +152,27 @@ body {
     height: 600px;
     background-color: black;
     overflow: hidden;
-    clip: rect(0px, 1000px, 600px, 0px);
+    display: none;
+    /*clip: rect(0px, 900px, 600px, 0px);*/
 
     perspective: 110px;
     perspective-origin: 450px 400px; /*normal: 310 / tilt: 400*/
     /* Fluchtpunkt oben in der Mitte der Referenz-Box */
+}
+
+#launchScreen {
+    position: absolute;
+    margin: auto;
+    width: 900px;
+    height: 600px;
+    background-color: black;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    font-family: galaxyFont;
+    font-size: 1.4em;
 }
 
 /* -----------------------------  PLAYER  ---------------------------------*/
@@ -182,36 +198,6 @@ body {
     top: 80px;
     z-index: 100;
 }
-
-/* -------------------  Background Parallax Sprites ------------------- */
-/*
-#bg4 {z-index: -104;}
-#bg3 {z-index: -43;}
-#bg2 {z-index: -42;}
-#bg1 {z-index: -41;}
-*/
-/* -----------------------------  Street Sprites   ---------------------------------*/
-/*
-#streetSprites {
-    position: absolute;
-    z-index: -70;
-}
-#street1 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(0px);}
-#street2 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-200px);}
-#street3 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-400px);}
-#street4 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-600px);}
-#street5 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-800px);}
-#street6 {transform: rotateX(90deg) translateX(76px) translateZ(-420px) translateY(-1000px);}
-*/
-/* -------------------------  Street Background Sprites  ---------------------------------*/
-/*
-.streetBackgrounds {
-    position: absolute;
-    z-index: -80;
-}
-*/
-
-
 
 .halb {
     width: 50%;
@@ -267,9 +253,8 @@ body {
     animation: textclip 2.45s linear infinite;
 }
 .jumpyText {
-    opacity: 0;
     line-height: 1;
-    animation: text-shadow 7s ease-in-out infinite, fadeIn 5s ease 2s forwards;
+    animation: text-shadow 7s ease-in-out infinite;
 }
 .jumpyStartText {
     opacity: 0;

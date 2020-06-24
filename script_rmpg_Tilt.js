@@ -18,6 +18,7 @@ const gameScreen = document.getElementById('gameScreen')
 const assetContainer = document.getElementById('assetContainer')
 const enemiesEle = document.getElementById('enemiesHere')
 const endScreen = document.getElementById("endScreen")
+const launchScreen = document.getElementById("launchScreen")
 
 // ##############################################################################
 // ----------------------------- global varriables -----------------------------
@@ -58,9 +59,13 @@ const targetFrameRate = 1000 / 25 // in ms
 // ##############################################################################
 // -----------------------------  Window on load  -----------------------------
 // ##############################################################################
-window.onload = function() {
-    if(!TEST_MODE) setTimeout(_=> mnMusic.play(), 1500)
-
+launchScreen.onclick = function() {
+//window.onload = function() {
+    if(!TEST_MODE) {
+        setTimeout(_=> liftOff.play(), 600)
+        setTimeout(_=> mnMusic.play(), 1800)
+    }
+    launched = true
     if (TEST_MODE) {
         dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
         dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
@@ -144,9 +149,11 @@ window.onload = function() {
     }
 
     playerEle.style.width = player.sprites[playerType].w + "px"
-    playerEle.style.left = halfWidth - playerEle.width/2 + "px"
+    playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
     playerEle.src = player.sprites[playerType].s
 
+    launchScreen.style.display = "none"
+    gameScreen.style.display = "block"
 }
 
 // ##############################################################################
@@ -419,6 +426,7 @@ class DummyCar {
 
     flyAway(nr) {
         carBump.play()
+        score += 5
         let x = this.lane-player_X*pCorr
         let xDir = mapRange(nr, -120,120, -8999,8999)
         let zDir = rngOf(900,1100) // 0  TEST
@@ -545,8 +553,8 @@ class Enemy {
                 `translate3D(${this.posX}px, ${this.y}px, ${this.z}px) rotateZ(${0}deg)`,
                 `translate3D(${this.posX-10}px, ${this.y+20}px, ${this.z}px) rotateZ(${0}deg)`,
                 `translate3D(${this.posX+10}px, ${this.y+40}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX-10}px, ${this.y+200}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX+10}px, ${this.y+200}px, ${this.z+100}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX-10}px, ${this.y+300}px, ${this.z}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX+10}px, ${this.y+300}px, ${this.z+100}px) rotateZ(${0}deg)`,
             ]},{
             direction: 'alternate',
             duration: 1500,
@@ -597,15 +605,16 @@ let kills = 0
 let killStreak = 0
 let idCount = 0 // id of dummies
 let playerType = 0
-let countdown = 120_000 // 180_000
+let countdown = 180_000 // 180_000
 let streetType = rngOf(0,4,"floor")
 let first = true
 let mute = false
+let launched = false
 let pCorr = 1.65 // x Korrektur Value
 let chop = -400 // Sinus
 
 // Sounds
-let crash,hit,carBump,countDownSweep,reaggeHorn // fx
+let crash,hit,carBump,countDownSweep,reaggeHorn,liftOff // fx
 let doubleKill,tripleKill,monsterKill,ultraKill // kill streak
 let godLike,rampage,ownage,dominating // score state
 let announcer = []
@@ -622,12 +631,12 @@ const keyUpdate = e => {
     KEYMAP[e.code] = e.type === 'keydown'
     //e.preventDefault()
     //console.log(KEYMAP)
-    if (e.type === "keydown") {
+    if (e.type === "keydown" && launched) {
         
         if (KEYMAP.Space) {
-            if (!running && first) {
+            if (!running && first && !startedCd) {
                 coutDownAnim(3) 
-            } else {
+            } else if (!first) {
                 (running) ? stopGame() : runGame()
             }
         }
@@ -824,11 +833,11 @@ function showEndscreen(score,dist,kills) {
 
     let rateTxt = ""
     if (score < 100) rateTxt="wow you suck!"
-    else if (score >= 100 && score < 2000) rateTxt="GIT GUD"
-    else if (score >= 2000 && score < 4000) rateTxt="NICE TRY"
-    else if (score >= 4000 && score < 6000) rateTxt="RAMPAGE"
-    else if (score >= 6000 && score < 8000) rateTxt="GOD LIKE"
-    else if (score >= 8000 && score < 10_000) rateTxt="CHEATER!"
+    else if (score >= 100 && score < 1000) rateTxt="GIT GUD"
+    else if (score >= 2000 && score < 2000) rateTxt="NICE TRY"
+    else if (score >= 4000 && score < 3000) rateTxt="RAMPAGE"
+    else if (score >= 6000 && score < 4000) rateTxt="GOD LIKE"
+    else if (score >= 8000 && score < 6000) rateTxt="CHEATER!"
     else rateTxt="default"
     
     let textEle = document.createElement("p")
@@ -977,7 +986,7 @@ function runGame() {
     for (const e of document.getElementById("uiElements").children) {
         e.classList.replace("jumpyText","synthText")
     }
-    document.getElementById("playStateNote")
+    document.getElementById("playStateNote").classList.replace("jumpyStartText","jumpyText")
 }
 
 
@@ -1032,6 +1041,7 @@ setTimeout(_ => {
     hit = new Sound(fxBuffer.getSound(3))
     countDownSweep = new Sound(fxBuffer.getSound(8))
     reaggeHorn = new Sound(fxBuffer.getSound(9))
+    liftOff = new Sound(fxBuffer.getSound(10))
 
     ownage = new Sound(voiceBuffer.getSound(1))
     dominating = new Sound(voiceBuffer.getSound(2))
@@ -1057,11 +1067,13 @@ setTimeout(_ => {
 },1000)
 
 bgMusic.src = SOUND.music[0]
-bgMusic.volume = 0.6
+bgMusic.volume = 0.9
 mnMusic.src = SOUND.music[1]
-mnMusic.volume = 0.6
+mnMusic.volume = 1
 
 }
+
+
 
 function reduceVolume(ele,rV,t) {
     let inv = setInterval(_=> {
@@ -1129,15 +1141,15 @@ Notes:
         mehr variationen von dummies
         
     To fix:
-        Datei namen auf gross und klein schreibung überprüfen!!!
+        Datei namen auf gross und klein schreibung überprüfen!!! ( DONE )
             -> alles klein mit '-' ???
-        Audio failed because the user didn't interact with the document first.
+        Audio failed because the user didn't interact with the document first. ( DONE )
+        doppel Space startet spiel
         Countdown läuft weiter wenn stop ( DONE )
-        Countdown nicht in sekunden 
+        Countdown nicht in sekunden  
         Class Assets = clusterFuck -< Split
             Cristalls -> 
             Pillar + Statues -> placeable random in group
-        doppel Space startet spiel
     
 */
 
