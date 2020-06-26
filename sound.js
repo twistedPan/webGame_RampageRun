@@ -26,6 +26,9 @@ const SOUND = {
         "assets/sound/fx/synthclick.mp3",
         "assets/sound/fx/reaggehorn.mp3",
         "assets/sound/fx/Whoosher.wav",
+        "assets/sound/fx/car-honk1.mp3",
+        "assets/sound/fx/car-honk2.mp3",
+        "assets/sound/fx/car-honk3.mp3",
         "assets/sound/voice/thisethan.mp3",
     ],
     music: [

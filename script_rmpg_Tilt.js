@@ -52,109 +52,10 @@ const lane = {
     L: halfWidth - 950,
     R: halfWidth + 950,
 }
-const playField = [-2000,2000]    // outer boundaries
+const playField = [-2000,2000]    // outer street boundaries
+const musicVol = 0.9
 const timestamp = _ => new Date().getTime()
 const targetFrameRate = 1000 / 25 // in ms
-
-// ##############################################################################
-// -----------------------------  Window on load  -----------------------------
-// ##############################################################################
-launchScreen.onclick = function() {
-//window.onload = function() {
-    if(!TEST_MODE) {
-        setTimeout(_=> liftOff.play(), 600)
-        setTimeout(_=> mnMusic.play(), 1800)
-    }
-    launched = true
-    if (TEST_MODE) {
-        dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
-        dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
-        dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
-        dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
-        dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
-    } else
-        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
-    
-    dummys.forEach(d => {d.ele.style.transform = 
-        `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
-
-    for (let i=0; i<6; i++) {
-        environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
-        environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
-    }
-    environment.forEach(env => {
-        env.ele.style.transform = `translateX(${env.lane-player_X}px) 
-           translateY(${-300}px) translateZ(${env.pos_Z}px)`})
-    
-    // Test Enemies
-    enemies.push(new Enemy(0))
-    enemies.push(new Enemy(1))
-    enemies.push(new Enemy(2))
-    enemies.push(new Enemy(3))
-    enemies.push(new Enemy(1))
-    
-    
-// ##############################################################################
-// ------------------------------------ CSS  -----------------------------------
-// ##############################################################################
-
-    ASSETS.BG_IMAGE.level = 3
-    // Parallax Background Sprites
-    for (const ele in bgSprites.children) {
-        if (!isNaN(ele)) {
-            bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
-            bgSprites.children[ele].style.top = `${0}px`
-            bgSprites.children[ele].style.width = `${2560}px`
-            bgSprites.children[ele].style.height = `${420}px`
-            bgSprites.children[ele].style.position = "absolute"
-            bgSprites.children[ele].style.left = 0
-            bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
-            bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
-            //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
-        } 
-        if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
-        //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
-    }
-
-    // BG Streets
-    for (let i=0; i<8; i++) {
-        let ele = document.createElement("span")
-        ele.id = `sBG${i+1}`
-        ele.classList.add('streetBackgrounds')
-        ele.style.position ="absolute"
-        ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
-        ele.style.backgroundSize= `${1000}px ${250}px`
-        ele.style.width = `${20000}px`
-        ele.style.height = `${streetL*2}px`
-        ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
-            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-        ele.style.zIndex = -400
-        document.getElementById("streetBGSprites").appendChild(ele)
-    }
-
-    // Street Sprites
-    for (let i=0; i<8; i++) {
-        let ele = document.createElement("span")
-        ele.id = `sBG${i+1}`
-        ele.classList.add('streetBackgrounds')
-        ele.style.position ="absolute"
-        ele.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
-        ele.style.backgroundSize = `${streetWidth}px ${200}px`
-        ele.style.width = `${streetWidth}px`
-        ele.style.height = `${204}px`;
-        ele.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
-            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-        ele.style.zIndex = -300
-        document.getElementById("streetSprites").appendChild(ele)
-    }
-
-    playerEle.style.width = player.sprites[playerType].w + "px"
-    playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
-    playerEle.src = player.sprites[playerType].s
-
-    launchScreen.style.display = "none"
-    gameScreen.style.display = "block"
-}
 
 // ##############################################################################
 // ----------------------------- classes / objects -----------------------------
@@ -293,7 +194,7 @@ const ASSETS = {
             {s: "assets/models/heli-green.gif",        w: 50,  p:100, sp: rngOf(7,10)},
             {s: "assets/models/heli-fast.gif",         w: 80,  p:50,  sp: 3.5},
             {s: "assets/models/heli-shot-fast.gif",    w: 80,  p:50,  sp: 3.5},
-            {s: "", w: 0, p: 0},
+            {s: "", w:0, p:0, sp:0},
         ]
         
     },
@@ -426,13 +327,13 @@ class DummyCar {
 
     flyAway(nr) {
         carBump.play()
+        carHonks.rngValue().play()
         score += 5
         let x = this.lane-player_X*pCorr
         let xDir = mapRange(nr, -120,120, -8999,8999)
-        let zDir = rngOf(900,1100) // 0  TEST
+        let zDir = 1000
         this.flyDir = xDir
-
-        let flyAwaaaay = this.ele.animate({
+        this.ele.animate({
             transform: [ 
                 `translate3D(${x}px, 0px, ${this.pos_Z}px) rotateZ(${0}deg)`,
                 `translate3D(${x+xDir}px, -8500px, ${this.pos_Z-zDir}px) rotateZ(${rngOf(500,1500)}deg)`
@@ -467,21 +368,19 @@ class Enemy {
         this.x = this.direction > 0 ? -200 : 1100
         this.posX = 0
         this.y = rngOf(10,120)
-        this.z = 0
+        this.center = {x:0,y:0}
         this.width = asset.w
         this.hW = this.width/2
         this.speed = asset.sp
-        this.hit = false
-        this.nr = idCount++
         this.points = asset.p
+        this.nr = idCount++
+        this.hit = false
                                         
 
         let ele = document.createElement("div")         // Main ELE
             ele.id = "enemy"+idCount
-            ele.style.transform = `translateX(${this.x}px) 
-                translateY(${this.y}px) translateZ(${this.z}px)`                    
+            ele.style.transform = `translateX(${this.x}px) translateY(${this.y}px)`
             ele.style.zIndex = -10
-            ele.style.color = "white"
         let tschopa = document.createElement("img")     // Image ELE
             tschopa.src = this.src
             tschopa.style.position ="absolute"
@@ -496,6 +395,8 @@ class Enemy {
             explosion.style.display = "none"
             this.explosion = explosion
         let info = document.createElement("p")
+            info.style.color = "white"
+            info.style.position = "absolute"
             if(!TEST_MODE)info.style.display = "none"
             
         enemiesHere.appendChild(ele).appendChild(tschopa)
@@ -506,18 +407,14 @@ class Enemy {
         this.chchld = ele.children[2]
 
     }
-    update(x,y,z) {
-        //console.log("y:",y)
+    update(x,y) {
         if (!this.hit) x /= 4
-        if ( this.x < -500 || this.x > 1500 ) {this.respawn()}
+        if ( this.x < -500 || this.x > 1500 ) this.respawn()
         this.x += this.speed
         this.posX = this.x-this.hW
-        this.ele.style.transform = `
-            translateX(${this.posX-=x}px) 
-            translateY(${this.y += y}px) 
-            translateZ(${this.z + z}px)`
+        this.ele.style.transform = `translateX(${this.posX-=x}px) translateY(${this.y+=y}px)`
         this.chld.style.transform = `scaleX(${this.direction})`
-        this.chchld.innerText = this.x.fl() +" / "+ this.y.fl()
+        this.chchld.innerText = this.x.fl()+" / "+this.y.fl()
     }
 
     respawn() {
@@ -532,29 +429,33 @@ class Enemy {
 
     getHit(dir) {
         let hitMap = mapRange(dir, -8999,8999, 0,900)
-        //let h = Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2) //let alpha = Math.acos(hitMap/h)
+        let xDir = dir
+        let yDir = -8500 // = top 0
+        let zDir = 1000 // 
+
+        //let h = Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2) 
+        //let alpha = Math.acos(hitMap/h)
         //let xCorr = Math.cos(Math.acos(hitMap/Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2))) * this.y
+
         let xCorr = (hitMap-halfWidth)/(Math.sqrt((Math.pow((hitMap-halfWidth),2)+Math.pow(450,2)),2)) * this.y
-        // KLAPPT DAS SO ?????
-        // z der autos wird nicht miteingerechnet / wo ist y? -8500px
 
         //console.log("Nr",this.nr,"- hitMap:",hitMap, "\nposX: ", this.x, " lX",this.x-this.hW," rX: ",this.x+this.width)
         if (hitMap-xCorr >= this.x-this.hW && hitMap-xCorr <= this.x+this.hW && !this.hit) {
             this.crash()//setTimeout(_=>this.crash(),500)
             this.hit = true
             score += this.points; kills += 1; killStreak += 1
-            console.log("Nr:",this.nr ," - hitMap:",hitMap.fl()," xCorr",xCorr, "\nposX: ", this.x.fl(), " lX",(this.x-this.hW.fl())," rX: ",(this.x+this.width).fl())
+            if (TEST_MODE)console.log("H_Nr:",this.nr ," - hitMap:",hitMap.fl()," xCorr",xCorr, "\nposX: ", this.x.fl(), " lX",(this.x-this.hW.fl())," rX: ",(this.x+this.width).fl())
         }
     }
 
     crash() {
         this.ele.animate({
             transform: [ 
-                `translate3D(${this.posX}px, ${this.y}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX-10}px, ${this.y+20}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX+10}px, ${this.y+40}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX-10}px, ${this.y+300}px, ${this.z}px) rotateZ(${0}deg)`,
-                `translate3D(${this.posX+10}px, ${this.y+300}px, ${this.z+100}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX}px, ${this.y}px, ${0}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX-10}px, ${this.y+20}px, ${0}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX+10}px, ${this.y+40}px, ${0}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX-10}px, ${this.y+300}px, ${0}px) rotateZ(${0}deg)`,
+                `translate3D(${this.posX+10}px, ${this.y+300}px, ${100}px) rotateZ(${0}deg)`,
             ]},{
             direction: 'alternate',
             duration: 1500,
@@ -612,14 +513,120 @@ let mute = false
 let launched = false
 let pCorr = 1.65 // x Korrektur Value
 let chop = -400 // Sinus
+let dd = 0
+let testEnemy = 0
 
 // Sounds
 let crash,hit,carBump,countDownSweep,reaggeHorn,liftOff // fx
+let carHonks = []
 let doubleKill,tripleKill,monsterKill,ultraKill // kill streak
 let godLike,rampage,ownage,dominating // score state
 let announcer = []
 let voice = [] // ?
 let context,voiceBuffer,fxBuffer,musicBuffer; // various
+
+
+// ##############################################################################
+// -----------------------------  Window on load  -----------------------------
+// ##############################################################################
+launchScreen.onclick = function() {
+    //window.onload = function() {
+        if(!TEST_MODE) {
+            setTimeout(_=> liftOff.play(), 600)
+            setTimeout(_=> mnMusic.play(), 1800)
+        }
+        launched = true
+        if (TEST_MODE) {
+            dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
+            dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
+            dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
+            dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
+            dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
+        } else
+            for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
+        
+        dummys.forEach(d => {d.ele.style.transform = 
+            `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
+    
+        for (let i=0; i<6; i++) {
+            environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
+            environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
+        }
+        environment.forEach(env => {
+            env.ele.style.transform = `translateX(${env.lane-player_X}px) 
+               translateY(${-300}px) translateZ(${env.pos_Z}px)`})
+        
+        // Test Enemies
+        enemies.push(new Enemy(0))
+        enemies.push(new Enemy(1))
+        enemies.push(new Enemy(2))
+        enemies.push(new Enemy(3))
+        enemies.push(new Enemy(1))
+        
+    // ##############################################################################
+    // ------------------------------------ CSS  -----------------------------------
+    // ##############################################################################
+    
+        ASSETS.BG_IMAGE.level = 3
+        // Parallax Background Sprites
+        for (const ele in bgSprites.children) {
+            if (!isNaN(ele)) {
+                bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
+                bgSprites.children[ele].style.top = `${0}px`
+                bgSprites.children[ele].style.width = `${2560}px`
+                bgSprites.children[ele].style.height = `${420}px`
+                bgSprites.children[ele].style.position = "absolute"
+                bgSprites.children[ele].style.left = 0
+                bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
+                bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
+                //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
+            } 
+            if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
+            //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
+        }
+    
+        // BG Streets
+        for (let i=0; i<8; i++) {
+            let ele = document.createElement("span")
+            ele.id = `sBG${i+1}`
+            ele.classList.add('streetBackgrounds')
+            ele.style.position ="absolute"
+            ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
+            ele.style.backgroundSize= `${1000}px ${250}px`
+            ele.style.width = `${20000}px`
+            ele.style.height = `${streetL*2}px`
+            ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
+                translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+            ele.style.zIndex = -400
+            document.getElementById("streetBGSprites").appendChild(ele)
+        }
+    
+        // Street Sprites
+        for (let i=0; i<8; i++) {
+            let ele = document.createElement("span")
+            ele.id = `sBG${i+1}`
+            ele.classList.add('streetBackgrounds')
+            ele.style.position ="absolute"
+            ele.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
+            ele.style.backgroundSize = `${streetWidth}px ${200}px`
+            ele.style.width = `${streetWidth}px`
+            ele.style.height = `${204}px`;
+            ele.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
+                translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+            ele.style.zIndex = -300
+            document.getElementById("streetSprites").appendChild(ele)
+        }
+    
+        playerEle.style.width = player.sprites[playerType].w + "px"
+        playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
+        playerEle.src = player.sprites[playerType].s
+    
+        launchScreen.style.display = "none"
+        gameScreen.style.display = "block"
+    }
+    
+
+
 
 // ##############################################################################
 // ----------------------------- EVENTLISTENER ------------------------
@@ -650,7 +657,7 @@ const keyUpdate = e => {
                 for (a of document.getElementById("audio").children) a.volume = 0
                 mute = true
             } else {
-                for (a of document.getElementById("audio").children) a.volume = 0.6
+                for (a of document.getElementById("audio").children) a.volume = musicVol
                 mute = false
             }
         }
@@ -747,7 +754,7 @@ function draw(step) {
     
     // move enemies with player and up'n'down
     enemies.forEach(ene => {
-        ene.update(player_X*pCorr, Math.sin(chop/200), 0)
+        ene.update(player_X*pCorr, Math.sin(chop/200))
     })
     chop+=10
 
@@ -786,6 +793,7 @@ function draw(step) {
         bg_X[1] += 0.4
     }
 
+    if (dd >= 1) {runGame(); dd = 0}
 
     //document.getElementById("testOut").innerText = "Dummy0: " + dummys[0].pos_Z 
 
@@ -794,7 +802,7 @@ function draw(step) {
         carBump
         reduceVolume(bgMusic,0.1,100)
         victoryTheme.play()
-        setTimeout(_=> increaseVolume(bgMusic,0.1,0.5,100), victoryTheme.buffer.duration*850)
+        setTimeout(_=> increaseVolume(bgMusic,0.1,musicVol,100), victoryTheme.buffer.duration*850)
         showEndscreen(score,distance,kills)
     }
 }
@@ -828,16 +836,17 @@ function showEndscreen(score,dist,kills) {
         assetContainer.style.display = "none"
         enemiesEle.style.display = "none"
         fadeInAnim(endScreen,1000) // fadeIn.play()
-        endScreen.style.backgroundImage = "url(assets/streets/black.png)"
+        endScreen.style.backgroundImage = "url(assets/street/black.png)"
     },1000)
 
     let rateTxt = ""
     if (score < 100) rateTxt="wow you suck!"
-    else if (score >= 100 && score < 1000) rateTxt="GIT GUD"
-    else if (score >= 2000 && score < 2000) rateTxt="NICE TRY"
-    else if (score >= 4000 && score < 3000) rateTxt="RAMPAGE"
-    else if (score >= 6000 && score < 4000) rateTxt="GOD LIKE"
-    else if (score >= 8000 && score < 6000) rateTxt="CHEATER!"
+    else if (score >= 100 && score < 2000) rateTxt="GIT GUD"
+    else if (score >= 2000 && score < 3000) rateTxt="NICE TRY"
+    else if (score >= 4000 && score < 5000) rateTxt="RAMPAGE"
+    else if (score >= 5000 && score < 6000) rateTxt="GOD LIKE"
+    else if (score >= 6000 && score < 7000) rateTxt="CHEATER"
+    else if (score >= 7000) rateTxt="no fkn chill"
     else rateTxt="default"
     
     let textEle = document.createElement("p")
@@ -953,7 +962,7 @@ function easeInOut(a,b,percent) { return a + (b-a)*((-Math.cos(percent*Math.PI)/
 
 Number.prototype.fl = function(){return Math.floor(this)}
 Object.prototype.oLenght = function() {let size = 0, key;for (key in this) {if (this.hasOwnProperty(key)) size++;}return size;}
-
+Array.prototype.rngValue = function(){return this[Math.floor(Math.random() * this.length)]}
 
 
 
@@ -981,12 +990,14 @@ function runGame() {
     window.requestAnimationFrame(frame);
 
     if (!TEST_MODE) bgMusic.play()
+    mnMusic.pause()
 
     // CSS changes
     for (const e of document.getElementById("uiElements").children) {
         e.classList.replace("jumpyText","synthText")
     }
     document.getElementById("playStateNote").classList.replace("jumpyStartText","jumpyText")
+    document.getElementById("playStateNote").style.display = "none"
 }
 
 
@@ -1042,6 +1053,11 @@ setTimeout(_ => {
     countDownSweep = new Sound(fxBuffer.getSound(8))
     reaggeHorn = new Sound(fxBuffer.getSound(9))
     liftOff = new Sound(fxBuffer.getSound(10))
+    carHonks = [
+        new Sound(fxBuffer.getSound(11)),
+        new Sound(fxBuffer.getSound(12)),
+        new Sound(fxBuffer.getSound(13))
+    ]
 
     ownage = new Sound(voiceBuffer.getSound(1))
     dominating = new Sound(voiceBuffer.getSound(2))
@@ -1067,9 +1083,9 @@ setTimeout(_ => {
 },1000)
 
 bgMusic.src = SOUND.music[0]
-bgMusic.volume = 0.9
+bgMusic.volume = musicVol
 mnMusic.src = SOUND.music[1]
-mnMusic.volume = 1
+mnMusic.volume = musicVol
 
 }
 
@@ -1084,7 +1100,7 @@ function reduceVolume(ele,rV,t) {
 
 function increaseVolume(ele,incV,endV,t) {
     let inv = setInterval(_=> {
-        if (ele.volume >= endV) clearInterval(inv)
+        if (ele.volume >= endV-0.1) clearInterval(inv)
         //console.log("reduceVolume -> ele.volume", ele.volume)
         ele.volume += incV},t)
 }
@@ -1133,7 +1149,8 @@ Notes:
     
     To implement:
         Tilt => Collision fail
-        point progrss an Hintergrund hängen
+        points pop-Up ( +50 +100 )
+        point progress an Hintergrund hängen
         -> synthwave - hirulecaste - mushroom Kingdom  lylatwars - 
         univers galaxy - ??? big unknown
         feuerräder burning street
@@ -1215,13 +1232,44 @@ for (i=0,j=0;i<pArr.length;i++,j++) {
     sArr[pArr[i]].push(pArr[j])
 }
 
+Animation API sucks for collision detection!
 
 */
 
 
 const TEST_MODE = false
 if (TEST_MODE) {
+    first = false
     document.getElementById("test").style.display = "block"
     document.getElementById("startScreen").style.display = "none"
     document.getElementById("playStateNote").style.display = "none"
+
+    
+    document.onmousemove = handleMouseMove;
+    function handleMouseMove(event) {
+        var eventDoc, doc, body;
+
+        event = event || window.event; // IE-ism
+
+        // If pageX/Y aren't available and clientX/Y are,
+        // calculate pageX/Y - logic taken from jQuery.
+        // (This is to support old IE)
+        if (event.pageX == null && event.clientX != null) {
+            eventDoc = (event.target && event.target.ownerDocument) || document;
+            doc = eventDoc.documentElement;
+            body = eventDoc.body;
+
+            event.pageX = event.clientX +
+                (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+                (doc && doc.clientLeft || body && body.clientLeft || 0);
+            event.pageY = event.clientY +
+                (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
+                (doc && doc.clientTop  || body && body.clientTop  || 0 );
+        }
+        let x = event.pageX
+        let y = event.pageY - 50
+        document.getElementById("testOut").innerHTML = "x: "+x +" / "+ "y: "+ y
+        // Use event.pageX / event.pageY here
+    }
+    
 }
