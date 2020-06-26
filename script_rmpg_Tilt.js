@@ -1232,6 +1232,9 @@ for (i=0,j=0;i<pArr.length;i++,j++) {
     sArr[pArr[i]].push(pArr[j])
 }
 
+Photoshop skills + 9000
+
+
 Animation API sucks for collision detection!
 
 */
