@@ -29,6 +29,7 @@ const SOUND = {
         "assets/sound/fx/car-honk1.mp3",
         "assets/sound/fx/car-honk2.mp3",
         "assets/sound/fx/car-honk3.mp3",
+        "assets/sound/fx/select2.wav",
         "assets/sound/voice/thisethan.mp3",
     ],
     music: [

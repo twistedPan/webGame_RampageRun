@@ -517,7 +517,7 @@ let dd = 0
 let testEnemy = 0
 
 // Sounds
-let crash,hit,carBump,countDownSweep,reaggeHorn,liftOff // fx
+let crash,hit,carBump,countDownSweep,reaggeHorn,liftOff,startClick // fx
 let carHonks = []
 let doubleKill,tripleKill,monsterKill,ultraKill // kill streak
 let godLike,rampage,ownage,dominating // score state
@@ -530,100 +530,101 @@ let context,voiceBuffer,fxBuffer,musicBuffer; // various
 // -----------------------------  Window on load  -----------------------------
 // ##############################################################################
 launchScreen.onclick = function() {
-    //window.onload = function() {
-        if(!TEST_MODE) {
-            setTimeout(_=> liftOff.play(), 600)
-            setTimeout(_=> mnMusic.play(), 1800)
-        }
-        launched = true
-        if (TEST_MODE) {
-            dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
-            dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
-            dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
-            dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
-            dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
-        } else
-            for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
-        
-        dummys.forEach(d => {d.ele.style.transform = 
-            `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
-    
-        for (let i=0; i<6; i++) {
-            environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
-            environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
-        }
-        environment.forEach(env => {
-            env.ele.style.transform = `translateX(${env.lane-player_X}px) 
-               translateY(${-300}px) translateZ(${env.pos_Z}px)`})
-        
-        // Test Enemies
-        enemies.push(new Enemy(0))
-        enemies.push(new Enemy(1))
-        enemies.push(new Enemy(2))
-        enemies.push(new Enemy(3))
-        enemies.push(new Enemy(1))
-        
-    // ##############################################################################
-    // ------------------------------------ CSS  -----------------------------------
-    // ##############################################################################
-    
-        ASSETS.BG_IMAGE.level = 3
-        // Parallax Background Sprites
-        for (const ele in bgSprites.children) {
-            if (!isNaN(ele)) {
-                bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
-                bgSprites.children[ele].style.top = `${0}px`
-                bgSprites.children[ele].style.width = `${2560}px`
-                bgSprites.children[ele].style.height = `${420}px`
-                bgSprites.children[ele].style.position = "absolute"
-                bgSprites.children[ele].style.left = 0
-                bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
-                bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
-                //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
-            } 
-            if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
-            //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
-        }
-    
-        // BG Streets
-        for (let i=0; i<8; i++) {
-            let ele = document.createElement("span")
-            ele.id = `sBG${i+1}`
-            ele.classList.add('streetBackgrounds')
-            ele.style.position ="absolute"
-            ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
-            ele.style.backgroundSize= `${1000}px ${250}px`
-            ele.style.width = `${20000}px`
-            ele.style.height = `${streetL*2}px`
-            ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
-                translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-            ele.style.zIndex = -400
-            document.getElementById("streetBGSprites").appendChild(ele)
-        }
-    
-        // Street Sprites
-        for (let i=0; i<8; i++) {
-            let ele = document.createElement("span")
-            ele.id = `sBG${i+1}`
-            ele.classList.add('streetBackgrounds')
-            ele.style.position ="absolute"
-            ele.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
-            ele.style.backgroundSize = `${streetWidth}px ${200}px`
-            ele.style.width = `${streetWidth}px`
-            ele.style.height = `${204}px`;
-            ele.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
-                translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-            ele.style.zIndex = -300
-            document.getElementById("streetSprites").appendChild(ele)
-        }
-    
-        playerEle.style.width = player.sprites[playerType].w + "px"
-        playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
-        playerEle.src = player.sprites[playerType].s
-    
-        launchScreen.style.display = "none"
-        gameScreen.style.display = "block"
+//window.onload = function() {
+    startClick.play()
+    if(!TEST_MODE) {
+        setTimeout(_=> liftOff.play(), 600)
+        setTimeout(_=> mnMusic.play(), 1800)
     }
+    launched = true
+    if (TEST_MODE) {
+        dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
+        dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
+        dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
+    } else
+        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
+    
+    dummys.forEach(d => {d.ele.style.transform = 
+        `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
+
+    for (let i=0; i<6; i++) {
+        environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
+        environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
+    }
+    environment.forEach(env => {
+        env.ele.style.transform = `translateX(${env.lane-player_X}px) 
+            translateY(${-300}px) translateZ(${env.pos_Z}px)`})
+    
+    // Test Enemies
+    enemies.push(new Enemy(0))
+    enemies.push(new Enemy(1))
+    enemies.push(new Enemy(2))
+    enemies.push(new Enemy(3))
+    enemies.push(new Enemy(1))
+    
+// ##############################################################################
+// ------------------------------------ CSS  -----------------------------------
+// ##############################################################################
+
+    ASSETS.BG_IMAGE.level = 3
+    // Parallax Background Sprites
+    for (const ele in bgSprites.children) {
+        if (!isNaN(ele)) {
+            bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
+            bgSprites.children[ele].style.top = `${0}px`
+            bgSprites.children[ele].style.width = `${2560}px`
+            bgSprites.children[ele].style.height = `${420}px`
+            bgSprites.children[ele].style.position = "absolute"
+            bgSprites.children[ele].style.left = 0
+            bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
+            bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
+            //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
+        } 
+        if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
+        //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
+    }
+
+    // BG Streets
+    for (let i=0; i<8; i++) {
+        let ele = document.createElement("span")
+        ele.id = `sBG${i+1}`
+        ele.classList.add('streetBackgrounds')
+        ele.style.position ="absolute"
+        ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
+        ele.style.backgroundSize= `${1000}px ${250}px`
+        ele.style.width = `${20000}px`
+        ele.style.height = `${streetL*2}px`
+        ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
+            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+        ele.style.zIndex = -400
+        document.getElementById("streetBGSprites").appendChild(ele)
+    }
+
+    // Street Sprites
+    for (let i=0; i<8; i++) {
+        let ele = document.createElement("span")
+        ele.id = `sBG${i+1}`
+        ele.classList.add('streetBackgrounds')
+        ele.style.position ="absolute"
+        ele.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
+        ele.style.backgroundSize = `${streetWidth}px ${200}px`
+        ele.style.width = `${streetWidth}px`
+        ele.style.height = `${204}px`;
+        ele.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
+            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+        ele.style.zIndex = -300
+        document.getElementById("streetSprites").appendChild(ele)
+    }
+
+    playerEle.style.width = player.sprites[playerType].w + "px"
+    playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
+    playerEle.src = player.sprites[playerType].s
+
+    launchScreen.style.display = "none"
+    gameScreen.style.display = "block"
+}
     
 
 
@@ -1058,6 +1059,7 @@ setTimeout(_ => {
         new Sound(fxBuffer.getSound(12)),
         new Sound(fxBuffer.getSound(13))
     ]
+    startClick = new Sound(fxBuffer.getSound(14))
 
     ownage = new Sound(voiceBuffer.getSound(1))
     dominating = new Sound(voiceBuffer.getSound(2))
