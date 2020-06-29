@@ -326,8 +326,8 @@ class DummyCar {
     }
 
     flyAway(nr) {
-        carBump.play()
-        carHonks.rngValue().play()
+        if(!mute)carBump.play()
+        if(!mute)carHonks.rngValue().play()
         score += 5
         let x = this.lane-player_X*pCorr
         let xDir = mapRange(nr, -120,120, -8999,8999)
@@ -467,18 +467,18 @@ class Enemy {
                 enemies.splice(i,1); enemies.push(new Enemy(rngOf(0,4,"floor")))
         setTimeout(_ => {   // timeOut for hit explosion and sound
             this.explosion.style.display = "block"
-            hit.play()
+            if(!mute)hit.play()
         }, 100)
         setTimeout(_ => { // timeOut for crash explosion and sound
             this.explosion.src = ASSETS.FX.src[2].s
-            crash.play()
+            if(!mute)crash.play()
         }, 1000)
         setTimeout(_ => {this.ele.style.display = "none"}, 1700) // remove animation at end
         setTimeout(_ => {   // timeOut for killStreak
-            if (killStreak == 5) ultraKill.play()
-            else if (killStreak == 4) monsterKill.play()
-            else if (killStreak == 3) tripleKill.play()
-            else if (killStreak == 2) doubleKill.play()
+            if (killStreak == 5 && !mute) ultraKill.play()
+            else if (killStreak == 4 && !mute) monsterKill.play()
+            else if (killStreak == 3 && !mute) tripleKill.play()
+            else if (killStreak == 2 && !mute) doubleKill.play()
             killStreak = 0
         }, 800)
                   
@@ -801,9 +801,9 @@ function draw(step) {
     if (min === "00" && sec === "00" && msec === "00") {
         running = false
         carBump
-        reduceVolume(bgMusic,0.1,100)
-        victoryTheme.play()
-        setTimeout(_=> increaseVolume(bgMusic,0.1,musicVol,100), victoryTheme.buffer.duration*850)
+        if(!mute)reduceVolume(bgMusic,0.1,100)
+        if(!mute)victoryTheme.play()
+        if(!mute)setTimeout(_=> increaseVolume(bgMusic,0.1,musicVol,100), victoryTheme.buffer.duration*850)
         showEndscreen(score,distance,kills)
     }
 }
@@ -901,7 +901,7 @@ function getPlayer(ele) {
 // start countdown
 let startedCd = false // play animation only once
 function coutDownAnim(t) {
-    reduceVolume(mnMusic,0.1,50)
+    if(!mute)reduceVolume(mnMusic,0.1,50)
     document.getElementById("startScreen").style.display = "none"
     document.getElementById("playStateNote").style.display = "none"
     let cd = document.getElementById("startCD")
@@ -911,14 +911,14 @@ function coutDownAnim(t) {
         let startI = setInterval(_=> {
             if (t === 0) {
                 cd.innerText = "RAMPAGE"
-                reaggeHorn.play()
-                rampage.play()
+                if(!mute)reaggeHorn.play()
+                if(!mute)rampage.play()
                 runGame()
                 first = false
                 clearInterval(startI)
             } else {
                 cd.innerText = t
-                countDownSweep.play()
+                if(!mute)countDownSweep.play()
             }
             t--
         },1000)
@@ -1091,7 +1091,9 @@ mnMusic.volume = musicVol
 
 }
 
-
+function playSound(sound,volume) {
+    sound
+}
 
 function reduceVolume(ele,rV,t) {
     let inv = setInterval(_=> {
