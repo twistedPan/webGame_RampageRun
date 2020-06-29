@@ -794,7 +794,7 @@ function draw(step) {
         bg_X[1] += 0.4
     }
 
-    if (dd >= 1) {runGame(); dd = 0}
+    if (dd >= 1) {for(i=0;i<d;i++)runGame(); dd = 0}
 
     //document.getElementById("testOut").innerText = "Dummy0: " + dummys[0].pos_Z 
 
