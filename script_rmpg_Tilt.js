@@ -1109,6 +1109,9 @@ function increaseVolume(ele,incV,endV,t) {
         ele.volume += incV},t)
 }
 
+
+
+
 // ###############################################################################
 // ----------------------------- Animations ---------------------
 // ###############################################################################
@@ -1159,11 +1162,12 @@ Notes:
         univers galaxy - ??? big unknown
         feuerräder burning street
         Helicopter shots
+        Life System - Helicopter crash causes damage
         mehr variationen von dummies
+        scoreboard -> socket.io?
         
     To fix:
         Datei namen auf gross und klein schreibung überprüfen!!! ( DONE )
-            -> alles klein mit '-' ???
         Audio failed because the user didn't interact with the document first. ( DONE )
         doppel Space startet spiel ( DONE )
         Countdown läuft weiter wenn stop ( DONE )
