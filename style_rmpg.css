@@ -267,8 +267,8 @@ body {
     animation: text-shadow 7s ease-in-out infinite, appearLeft 3s 0s 1;
 }
 .jumpyTextAndMovingAndFlying {
-    left: 500px;
-    animation: text-shadow 7s ease-in-out infinite, moveThrough 3s linear infinite, fadeIn 5s ease 2s forwards;
+    /*left: 1000px;*/
+    animation: text-shadow 7s ease-in-out infinite, moveThrough 14s linear infinite, fadeIn 5s ease 2s forwards;
 }
 .growingText {
     float: left;
@@ -359,8 +359,8 @@ body {
     to {opacity: 1;}
 }
 @keyframes moveThrough {
-    from {transform: translateX(-1200px);}
-    to {transform: translateX(500px);}
+    from {transform: translateX(-2600px);}
+    to {transform: translateX(2600px);}
 }
 
 
