@@ -13,6 +13,12 @@ const SOUND = {
         "assets/sound/voice/EpicAnnounce_FX_ComboBreaker.wav",
         "assets/sound/voice/EpicAnnounce_FX_BallsOfSteel.wav",
         "assets/sound/voice/EpicAnnounce_FX_TheCakeIsALie.wav",
+        "assets/sound/voice/YouGotBoostPower.mp3",
+        "assets/sound/voice/Sonic-WOOOOOAAAAAAH.mp3",
+        "assets/sound/fx/MaxCoveri-BeginningSample.mp3",
+        "assets/sound/voice/Mario-Voice-WOOOAAAH.mp3",
+        "assets/sound/voice/MK64-DK-fly.mp3",
+        "assets/sound/voice/MK64-Toad-Awawawa.mp3",
     ],
     fx : [
         "assets/sound/fx/BumperHit.wav",
@@ -36,6 +42,11 @@ const SOUND = {
         "assets/sound/RampageRun-pkmnBattle-Trackv2.mp3",
         "assets/sound/RampageRun-Menu-Theme.mp3",
         "assets/sound/RampageRun-VictoryFanfare.mp3",
+        "assets/sound/MaxCoveri-Runninginthe90s.mp3",
+        "assets/sound/Doom-CultistBase.mp3",
+        "assets/sound/Doom-Rip-N-Tear.mp3",
+        "assets/sound/Doom-TheDoomHunter.mp3",
+        "assets/sound/Doom-TheOnlyThingTheyFearIsYou.mp3",
     ]
 }
 
@@ -51,7 +62,7 @@ class Sound {
         this.source.buffer = this.buffer;
         this.source.connect(this.gainNode);
         this.gainNode.connect(this.context.destination);
-        this.gainNode.gain.volume = 0.1
+        this.gainNode.gain.value = fxVol;
     }
     play() {
         this.setup();

@@ -1,3 +1,38 @@
+/**
+ * TO-DO
+ * 
+ * if cheat is activated get new character to play with
+ * 
+ *      When muted and start menu music starts 
+ *      does music Vol work? Normal 0.6 Cheat 1? -> normal 0.1 does it get louder?
+ */
+/*
+Notes:
+    
+    To implement:
+        Tilt => Collision fail
+        points pop-Up ( +50 +100 )
+        point progress an Hintergrund hängen
+        -> synthwave - hirulecaste - mushroom Kingdom  lylatwars - 
+        univers galaxy - ??? big unknown
+        feuerräder burning street
+        Helicopter shots
+        mehr variationen von dummies
+        
+    To fix:
+        Datei namen auf gross und klein schreibung überprüfen!!! ( DONE )
+            -> alles klein mit '-' ???
+        Audio failed because the user didn't interact with the document first. ( DONE )
+        doppel Space startet spiel ( DONE )
+        Countdown läuft weiter wenn stop ( DONE )
+        Countdown nicht in sekunden  
+        Class Assets = clusterFuck -< Split
+            Cristalls -> 
+            Pillar + Statues -> placeable random in group
+    
+*/
+
+
 // ##############################################################################
 // -----------------------------  HTML Elements  -----------------------------
 // ##############################################################################
@@ -19,6 +54,7 @@ const assetContainer = document.getElementById('assetContainer')
 const enemiesEle = document.getElementById('enemiesHere')
 const endScreen = document.getElementById("endScreen")
 const launchScreen = document.getElementById("launchScreen")
+const ele_musicCtrlTxt = document.getElementById("musicCtrlTxt");
 
 // ##############################################################################
 // ----------------------------- global varriables -----------------------------
@@ -53,9 +89,12 @@ const lane = {
     R: halfWidth + 950,
 }
 const playField = [-2000,2000]    // outer street boundaries
-const musicVol = 0.9
 const timestamp = _ => new Date().getTime()
+const musicMaxVolume = 0.7;
+const fxMaxVolume = 0.6;
 const targetFrameRate = 1000 / 25 // in ms
+
+const TEST_MODE = false
 
 // ##############################################################################
 // ----------------------------- classes / objects -----------------------------
@@ -66,49 +105,67 @@ let player = {
             s: "assets/models/player_straight.png",
             l: "assets/models/player_left.png",
             r: "assets/models/player_right.png",
-            w: 126,
+            w: 124,
         },
         {
             s: "assets/models/player-p-straight.png",
             l: "assets/models/player-p-left.png",
             r: "assets/models/player-p-right.png",
-            w: 126,
+            w: 124,
         },
         {
             s: "assets/models/player-y-straight.png",
             l: "assets/models/player-y-left.png",
             r: "assets/models/player-y-right.png",
-            w: 126,
+            w: 124,
         },
         {
             s: "assets/models/smKart-mario-s.png",
             l: "assets/models/smKart-mario-l.png",
             r: "assets/models/smKart-mario-r.png",
-            w: 66,
+            w: 64,
         },
         {
             s: "assets/models/smKart-toad-s.png",
             l: "assets/models/smKart-toad-l.png",
             r: "assets/models/smKart-toad-r.png",
-            w: 66,
+            w: 64,
         },
         {
             s: "assets/models/smKart-dk-s.png",
             l: "assets/models/smKart-dk-l.png",
             r: "assets/models/smKart-dk-r.png",
-            w: 66,
+            w: 64,
         },
         {
             s: "assets/models/bowser-s.png",
             l: "assets/models/bowser-l.png",
             r: "assets/models/bowser-r.png",
-            w: 66,
+            w: 64,
         },
         {
             s: "assets/models/goku_straight.gif",
             l: "assets/models/goku_left.gif",
             r: "assets/models/goku_right.gif",
             w: 80,
+        },
+        {
+            s: "assets/models/F_Zero-Cpt_Falcon-S.png",
+            l: "assets/models/F_Zero-Cpt_Falcon-L.png",
+            r: "assets/models/F_Zero-Cpt_Falcon-R.png",
+            w: 96,
+        },
+        {
+            s: "assets/models/Initial_D-S.png",
+            l: "assets/models/Initial_D-L.png",
+            r: "assets/models/Initial_D-R.png",
+            w: 96,
+        },
+        {
+            s: "assets/models/sonic-S.png",
+            l: "assets/models/sonic-L.png",
+            r: "assets/models/sonic-R.png",
+            w: 48,
         },
     ],
     width: playerEle.width,
@@ -125,6 +182,7 @@ const ASSETS = {
             "assets/street/street-g.png",
             "assets/street/street-rp.png",
             "assets/street/street-o.png",
+            "assets/street/street-w.png",
             //"assets/street/.png",
         ]
     },
@@ -134,22 +192,24 @@ const ASSETS = {
             "assets/street/grid_b.png",
             "assets/street/grid_g.png",
             "assets/street/grid_r.png",
-            "assets/street/blocks_1.jpg",
-            "assets/street/blocks_2.jpg",
-            "assets/street/blocks_3.jpg",
+            "assets/street/grid_o.png",
+            "assets/street/grid_w.png",
+            //"assets/street/blocks_1.jpg",
+            //"assets/street/blocks_2.jpg",
+            //"assets/street/blocks_3.jpg",
         ]
     },    
     DUMMYCHAR: {
         src: [
-            "assets/models/dummyCar1.png",
-            "assets/models/dummyCar2.png",
-            "assets/models/dummyCar3.png",
-            "assets/models/dummyCar4.png",
-            "assets/models/dummyCar5.png",
-            "assets/models/dummyDD.png",
-            "assets/models/dummyMario.png",
-            "assets/models/dummyToad.png",
-            "assets/models/dummyDK.png",
+            "assets/models/dummy-Car1.png",
+            "assets/models/dummy-Car2.png",
+            "assets/models/dummy-Car3.png",
+            "assets/models/dummy-Car4.png",
+            "assets/models/dummy-Car5.png",
+            "assets/models/dummy-DD.png",
+            "assets/models/dummy-Mario.png",
+            "assets/models/dummy-Toad.png",
+            "assets/models/dummy-DK.png",
         ],
         size: {w:126, h:80}, // org 300,241
     },
@@ -177,7 +237,7 @@ const ASSETS = {
         size: {w:300,h:400}, // org crystall 2000,2000
     },
     BG_IMAGE: {
-        level: 1,
+        level: 0,
         src : function() {
             return [
                 'assets/lvl'+this.level+'/bg_1-tilt.png',
@@ -208,31 +268,32 @@ const ASSETS = {
     },
 }
 class Asset {
-    constructor(_posZ, _lane, _asset, _type) {
+    constructor(_posZ, _lane, _asset, _type, _size) {
         this.pos_Z = _posZ
         this.asset = _asset
         this.width = this.asset.size.w
         this.path = this.asset.src
-        this.pillars = this.path
+        this.pillars = this.path.slice(4,this.path.length)
         this.src = this.asset.src[_type] || rngProperty(this.asset.src,5)
+        this.startImg = this.asset.src[_type];
         this.lane = _lane - this.width/2
-        // this.nr = idCount++ 
+        this.zIndex = Math.round(mapRange(this.pos_Z, 0,-1600, -30, -240));
                 
         let ele = document.createElement('img')
         ele.classList.add("assets")
-        //ele.id = "asset_"+idCount; 
         ele.src = this.src
         ele.style.width = this.width+"px"
         ele.style.height = this.asset.size.h+"px" ||"auto"
         ele.style.zIndex = 1
         assetContainer.appendChild(ele)
         this.ele = ele
+        this.ele.style.zIndex = this.zIndex
     }
 
     setZ(maxZ) { // player is at z=0
-        this.zIndex = Math.round(mapRange(this.pos_Z, 0,-1600, -30, -120))
+        this.zIndex = Math.round(mapRange(this.pos_Z, 0,-1600, -30, -240))
         
-        if (this.pos_Z < maxZ) this.ele.style.zIndex = this.zIndex
+        if (this.pos_Z > maxZ) this.ele.style.zIndex = this.zIndex
         else if (this.pos_Z > 101) this.ele.style.zIndex = -1000
         else if (this.pos_Z > -2) this.ele.style.zIndex = 6
         else this.ele.style.zIndex = 2
@@ -258,13 +319,13 @@ class DummyCar {
         this.src = this.asset.src[_type] || rngProperty(this.asset.src,5)
         this.speed = rngOf(2,5)
         this.lane = _lane - this.hW
-        this.collided = false
-        this.flyDir = 0
-        this.nr = idCount++  // nicht in gebrauch
+        this.collider = {x:0,y:0,width:0,height:0};
+        this.hasCollided = false
+        this.isFlying = false;
+        this.nr = idCount++  // not used
 
         let ele = document.createElement('img')
         ele.classList.add("assets")
-        //ele.id = "asset_"+idCount; 
         ele.src = this.src
         ele.style.width = this.width+"px"
         ele.style.height = this.asset.size.h+"px" ||"auto"
@@ -273,8 +334,15 @@ class DummyCar {
         this.ele = ele
     }
     update(_speed) {
+        let dumBCR = this.ele.getBoundingClientRect();
+        let miniCol = 24;
+        this.collider = {
+            x:dumBCR.x +miniCol/2,y:dumBCR.y-50 +miniCol/2,
+            width:dumBCR.width -miniCol,height:dumBCR.height -miniCol
+        };
+        if (this.isFlying && this.collider.y <= 0) this.isFlying = false;
         // respawn
-        if (!this.collided) {
+        if (!this.hasCollided) {
             if (this.pos_Z <= -1400 && _speed<=90) { //hinten //weg? wegen stehen bleiben?
                 this.pos_Z = rngOf( 100, 200)
                 this.respawn()
@@ -305,38 +373,60 @@ class DummyCar {
         this.ele.style.display = "block"
     }
 
-    collisonDetect() {
+    dumColDetection() {
         let playerCenter = (player.mid + (player_X*pCorr)) - (this.hW-player.hW)
         // lane - playerX = 0 - P und D alignt
         
         if (playerCenter > (this.lane-this.width)+col_Buffer &&
             playerCenter < (this.lane+this.width)-col_Buffer &&
             this.pos_Z >= -22 && this.pos_Z <= 18) { //-22 / +18
-                if (!this.collided) {
-                    this.flyAway(this.lane-playerCenter)
-                    //if (this.lane-playerCenter > 0) this.flyAway(this.lane-playerCenter)
-                    //else this.flyAway(this.lane-playerCenter)
+                if (!this.hasCollided) {
+                    this.flyAway(this.lane-playerCenter);
+                    this.isFlying = true;
                 }
-                this.collided = true
+                this.hasCollided = true
                 return true
         } else {
-            //this.collided = false
             return false
         }
     }
 
-    flyAway(nr) {
-        if(!mute)carBump.play()
-        if(!mute)carHonks.rngValue().play()
+    flyAway(offsetToPlayerCenter) {
+        // this.ele.src.split("-")[1].slice(0,this.ele.src.split("-")[1].length-4)
+        carBump.play()
+        let carType = this.ele.src.split("-")[1].slice(0,this.ele.src.split("-")[1].length-4);
+        switch (carType) {
+            case "Mario": 
+                marioHonk.play();
+                break;
+            case "DK" : 
+                dkHonk.play();
+                break;
+            case "Toad" :
+                toadHonk.play();
+                break;
+            default:
+                carHonks.rngValue().play()
+                break;
+        }
         score += 5
-        let x = this.lane-player_X*pCorr
-        let xDir = mapRange(nr, -120,120, -8999,8999)
-        let zDir = 1000
-        this.flyDir = xDir
+
+        let xDummy = (this.lane)-player_X*(pCorr);
+        let xDir = mapRange(offsetToPlayerCenter, -116,116, -8999,8999);
+        let yDir = -8500;
+        let zDir = 1000; // targeted Z-Axis Value
+        
+        /* if (TEST_MODE) { // xx
+            let flyDirScreen_x2 = mapRange(xDir, -8999,8999, -450,450);    // x-coordinate
+            let flyDirScreen_y2Fac = mapRange(Math.abs(xDir), 0,8999, 0.05,0.015); // estimated y-factor
+            let flyDirScreen_y2 = yDir*flyDirScreen_y2Fac // y-coordinate
+            drawLine(xDummy+this.hW, 480,(xDummy+this.hW) + flyDirScreen_x2, flyDirScreen_y2,"white");
+        } */
+
         this.ele.animate({
             transform: [ 
-                `translate3D(${x}px, 0px, ${this.pos_Z}px) rotateZ(${0}deg)`,
-                `translate3D(${x+xDir}px, -8500px, ${this.pos_Z-zDir}px) rotateZ(${rngOf(500,1500)}deg)`
+                `translate3D(${xDummy}px, 0px, ${this.pos_Z}px) rotateZ(${0}deg)`,
+                `translate3D(${xDummy+xDir}px, ${yDir}px, ${this.pos_Z-zDir}px) rotateZ(${rngOf(500,1500)}deg)`
             ],
             opacity: [1, 0]}, {
             direction: 'alternate',
@@ -344,24 +434,25 @@ class DummyCar {
             iterations: 1,
             fill: 'none'
             }
-        )
+        );
+        
         setTimeout(_ => {
-            this.collided = false
+            this.hasCollided = false
             this.ele.style.display = "none"
             if (speed<=90) {
                 this.pos_Z = rngOf( 100, 200)
                 this.respawn()
             } else if (speed>90) {
                 this.pos_Z = rngOf( -1600, -1800)
-                if(running)this.respawn()
-            }}, 4000)
+                if(isRunning) this.respawn();
+            }}, 2000);
 
-        //console.log("nr: ",nr.fl(), " Xdir:",xDir.fl(), " = ", mapRange(xDir, -8999,8999, 0,900).fl())
+        //console.log("offsetToPlayerCenter: ",offsetToPlayerCenter.fl(), " Xdir:",xDir.fl(), " = ", mapRange(xDir, -8999,8999, 0,900).fl())
     }
 }
 
 class Enemy {
-    constructor(_type,_x) {
+    constructor(_type) {
         let asset = ASSETS.ENEMIES.src[_type]
         this.direction = getOne(1,-1) // 1=Left / -1=Right
         this.src = asset.s
@@ -375,7 +466,8 @@ class Enemy {
         this.points = asset.p
         this.nr = idCount++
         this.hit = false
-                                        
+        this.collider = {x:0,y:0,width:0,height:0}
+
 
         let ele = document.createElement("div")         // Main ELE
             ele.id = "enemy"+idCount
@@ -412,9 +504,16 @@ class Enemy {
         if ( this.x < -500 || this.x > 1500 ) this.respawn()
         this.x += this.speed
         this.posX = this.x-this.hW
-        this.ele.style.transform = `translateX(${this.posX-=x}px) translateY(${this.y+=y}px)`
+        this.ele.style.transform = `translateX(${this.posX}px) translateY(${this.y+=y}px)` // old xx this.posX-=x
         this.chld.style.transform = `scaleX(${this.direction})`
         this.chchld.innerText = this.x.fl()+" / "+this.y.fl()
+        let miniCol = 24;
+        this.collider = {
+            x:this.ele.getBoundingClientRect().x +miniCol/2,
+            y:this.ele.getBoundingClientRect().y-50 +miniCol/2,
+            width:this.width -miniCol,height:this.width-20 -miniCol};
+        
+        if(TEST_MODE) svgElements[this.nr] = `<rect x="${this.collider.x}" y="${this.collider.y}" width="${this.collider.width}" height="${this.collider.width}" stroke="white" />`
     }
 
     respawn() {
@@ -427,25 +526,16 @@ class Enemy {
         //console.log("RESPAWN:",this.src,this.direction,this.x,this.speed)
     }
 
-    getHit(dir) {
-        let hitMap = mapRange(dir, -8999,8999, 0,900)
-        let xDir = dir
-        let yDir = -8500 // = top 0
-        let zDir = 1000 // 
+    hitCheck(dummy) {
 
-        //let h = Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2) 
-        //let alpha = Math.acos(hitMap/h)
-        //let xCorr = Math.cos(Math.acos(hitMap/Math.sqrt((Math.pow(hitMap,2)+Math.pow(450,2)),2))) * this.y
-
-        let xCorr = (hitMap-halfWidth)/(Math.sqrt((Math.pow((hitMap-halfWidth),2)+Math.pow(450,2)),2)) * this.y
-
-        //console.log("Nr",this.nr,"- hitMap:",hitMap, "\nposX: ", this.x, " lX",this.x-this.hW," rX: ",this.x+this.width)
-        if (hitMap-xCorr >= this.x-this.hW && hitMap-xCorr <= this.x+this.hW && !this.hit) {
+        if (rectCollisionDetect(dummy.collider,this.collider)) {
+            //console.log("Collision at:",this, dummys);
             this.crash()//setTimeout(_=>this.crash(),500)
             this.hit = true
-            score += this.points; kills += 1; killStreak += 1
-            if (TEST_MODE)console.log("H_Nr:",this.nr ," - hitMap:",hitMap.fl()," xCorr",xCorr, "\nposX: ", this.x.fl(), " lX",(this.x-this.hW.fl())," rX: ",(this.x+this.width).fl())
+            //score += this.points;
+            kills += 1; killStreak += 1
         }
+
     }
 
     crash() {
@@ -467,19 +557,35 @@ class Enemy {
                 enemies.splice(i,1); enemies.push(new Enemy(rngOf(0,4,"floor")))
         setTimeout(_ => {   // timeOut for hit explosion and sound
             this.explosion.style.display = "block"
-            if(!mute)hit.play()
+            hit.play()
         }, 100)
         setTimeout(_ => { // timeOut for crash explosion and sound
             this.explosion.src = ASSETS.FX.src[2].s
-            if(!mute)crash.play()
+            crash.play()
         }, 1000)
         setTimeout(_ => {this.ele.style.display = "none"}, 1700) // remove animation at end
         setTimeout(_ => {   // timeOut for killStreak
-            if (killStreak == 5 && !mute) ultraKill.play()
-            else if (killStreak == 4 && !mute) monsterKill.play()
-            else if (killStreak == 3 && !mute) tripleKill.play()
-            else if (killStreak == 2 && !mute) doubleKill.play()
+            if (killStreak == 5) {
+                monsterKill.play()
+                score += this.points*5;
+            }
+            else if (killStreak == 4) {
+                ultraKill.play()
+                score += this.points*4;
+            }
+            else if (killStreak == 3) {
+                tripleKill.play()
+                score += this.points*2;
+            }
+            else if (killStreak == 2) {
+                doubleKill.play()
+                score += (this.points*1.5).fl();
+            }
+            else {
+                score += this.points;
+            }
             killStreak = 0
+            //console.log("Points of",this.src, " :",this.points);
         }, 800)
                   
     }
@@ -489,10 +595,18 @@ class Enemy {
     }
 }
 
+
+
+
+
+
+
+
 // ##############################################################################
 // -----------------------------  Variables  -----------------------------
 // ##############################################################################
-let running = false // Game state
+let isRunning = false // Game state 
+let gameHasEnded = false;
 let player_X = 0    // movement of screen
 let bg_X = [0,0,0,0]    // xCoord for Parallx
 let xArr = [MXM,MXM,MXM,MXM,MXM,MXM,MXM,MXM] // für Street und sBg verschiebung / track
@@ -506,37 +620,143 @@ let kills = 0
 let killStreak = 0
 let idCount = 0 // id of dummies
 let playerType = 0
-let countdown = 180_000 // 180_000
-let streetType = rngOf(0,4,"floor")
-let first = true
-let mute = false
+let countdown = 60_000 // 60_000 // 180_000
+let streetType = 0; //rngOf(0,4,"floor")
+let isFirst = true // this is a new session and the game wasn't started yet
+let isMute = sessionStorage.musicIsMuted == 1 ? 1 : 0;    // if undefined => false
 let launched = false
 let pCorr = 1.65 // x Korrektur Value
 let chop = -400 // Sinus
+let musicVol = musicMaxVolume;
+let fxVol = fxMaxVolume;
 let dd = 0
-let testEnemy = 0
+let streetProgression = 0
+let cheatIsActivated = false;
+let rainbowStreet = false;
+let endlessRun = false;
+let isReInitialized = sessionStorage.reInitialized == 1 ? 1 : 0;
 
 // Sounds
 let crash,hit,carBump,countDownSweep,reaggeHorn,liftOff,startClick // fx
+let marioHonk,dkHonk,toadHonk
 let carHonks = []
 let doubleKill,tripleKill,monsterKill,ultraKill // kill streak
 let godLike,rampage,ownage,dominating // score state
 let announcer = []
 let voice = [] // ?
+let doomCollection, killMaster = [];
 let context,voiceBuffer,fxBuffer,musicBuffer; // various
+let boostPower,sonicWoa,inTheBeninging;
+
+
+
 
 
 // ##############################################################################
 // -----------------------------  Window on load  -----------------------------
 // ##############################################################################
+window.onload = function() {
+
+    // maybe this guaranteed that every sound is loaded
+    if (isReInitialized == true) {
+        document.getElementById("launchScreenText").innerText = "Click HARDER!!!"
+    }
+
+    if (isMute) {
+        ele_musicCtrlTxt.innerText = "Unmute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+    }
+    else {
+        ele_musicCtrlTxt.innerText = "Mute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+    }
+
+    // code duplication!!! xx
+    if (TEST_MODE) {
+
+        launched = true
+
+        dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
+        dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
+        dummys.push(new DummyCar(-200,lane.r,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
+        dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
+            
+        // testing xx
+        svgElements.push('<rect x="900" y="600" width="60" height="60" stroke="white" />')
+        svgElements.push('<rect x="0" y="0" width="0" height="0" stroke="white" />')
+        svgElements.push('<rect x="0" y="0" width="0" height="0" stroke="white" />')
+        svgElements.push('<rect x="0" y="0" width="0" height="0" stroke="white" />')
+        svgElements.push('<rect x="0" y="0" width="0" height="0" stroke="white" />')
+        svgElements.push('<rect x="10" y="10" width="60" height="60" stroke="white" />')
+        svgElements.push('<rect x="10" y="10" width="60" height="60" stroke="white" />')
+        svgElements.push('<rect x="10" y="10" width="60" height="60" stroke="white" />')
+        svgElements.push('<rect x="10" y="10" width="60" height="60" stroke="white" />')
+        svgElements.push('<rect x="10" y="10" width="60" height="60" stroke="white" />')
+        
+        document.getElementById("testSVG").style.display = "block";
+
+        dummys.forEach(d => {d.ele.style.transform = 
+            `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
+    
+        for (let i=0; i<6; i++) {
+            environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
+            environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
+        }
+        environment.forEach(env => {
+            env.ele.style.transform = `translateX(${env.lane-player_X}px) 
+                translateY(${-300}px) translateZ(${env.pos_Z}px)`})
+        
+        // Test Enemies
+        enemies.push(new Enemy(0))
+        enemies.push(new Enemy(1))
+        enemies.push(new Enemy(2))
+        enemies.push(new Enemy(3))
+        enemies.push(new Enemy(1))
+    
+        // xx
+        enemies[0].x = 100
+        enemies[1].x = 250
+        enemies[2].x = 400
+        enemies[3].x = 550
+        enemies[4].x = 700
+    
+
+        cssInit();
+    }
+}
+
+// normal start
 launchScreen.onclick = function() {
-//window.onload = function() {
+
+    // maybe this guaranteed that every sound is loaded
+    if (isReInitialized == false) {
+        sessionStorage.reInitialized = 1;
+        location.reload();
+    }
+
+
     startClick.play()
+
     if(!TEST_MODE) {
         setTimeout(_=> liftOff.play(), 600)
         setTimeout(_=> mnMusic.play(), 1800)
     }
+
     launched = true
+
+    // Set Music Volume
+    if (isMute == true) {
+        for (a of document.getElementById("audio").children) a.volume = 0;
+        fxVol = 0;
+        ele_musicCtrlTxt.innerText = "Unmute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+    }
+    else {
+        for (a of document.getElementById("audio").children) a.volume = musicVol;
+        fxVol = fxMaxVolume;
+        ele_musicCtrlTxt.innerText = "Mute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+    }
+    sessionStorage.musicIsMuted = sessionStorage.musicIsMuted == 1 ? 1 : 0;
+
+
     if (TEST_MODE) {
         dummys.push(new DummyCar(-10,lane.ll,ASSETS.DUMMYCHAR,4)) // rngOf(100,300)
         dummys.push(new DummyCar(-180,lane.l,ASSETS.DUMMYCHAR,2))
@@ -544,88 +764,41 @@ launchScreen.onclick = function() {
         dummys.push(new DummyCar(-20,lane.rr,ASSETS.DUMMYCHAR))
         dummys.push(new DummyCar(-200,lane.m,ASSETS.DUMMYCHAR))
     } else
-        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),/* lane.m */rngProperty(lane,2),ASSETS.DUMMYCHAR))
+        for (let i=0; i<10; i++) dummys.push(new DummyCar(rngOf(30,-1200),rngProperty(lane,2),ASSETS.DUMMYCHAR))
     
     dummys.forEach(d => {d.ele.style.transform = 
         `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
 
     for (let i=0; i<6; i++) {
+        // laser pillars
         environment.push(new Asset(-130+zArr[i],lane.L, ASSETS.SIDE_OBJ,0))
         environment.push(new Asset(-130+zArr[i],lane.R, ASSETS.SIDE_OBJ,1))
+        environment.push(new Asset(-128+zArr[i],lane.L*2, ASSETS.SIDE_OBJ,0))
+        environment.push(new Asset(-128+zArr[i],lane.R*1.5, ASSETS.SIDE_OBJ,1))
+        environment.push(new Asset(-126+zArr[i],lane.L*3, ASSETS.SIDE_OBJ,0))
+        environment.push(new Asset(-126+zArr[i],lane.R*2, ASSETS.SIDE_OBJ,1))
     }
     environment.forEach(env => {
         env.ele.style.transform = `translateX(${env.lane-player_X}px) 
             translateY(${-300}px) translateZ(${env.pos_Z}px)`})
     
-    // Test Enemies
+    // create all Enemies 
     enemies.push(new Enemy(0))
     enemies.push(new Enemy(1))
     enemies.push(new Enemy(2))
     enemies.push(new Enemy(3))
     enemies.push(new Enemy(1))
-    
-// ##############################################################################
-// ------------------------------------ CSS  -----------------------------------
-// ##############################################################################
 
-    ASSETS.BG_IMAGE.level = 3
-    // Parallax Background Sprites
-    for (const ele in bgSprites.children) {
-        if (!isNaN(ele)) {
-            bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
-            bgSprites.children[ele].style.top = `${0}px`
-            bgSprites.children[ele].style.width = `${2560}px`
-            bgSprites.children[ele].style.height = `${420}px`
-            bgSprites.children[ele].style.position = "absolute"
-            bgSprites.children[ele].style.left = 0
-            bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
-            bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
-            //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
-        } 
-        if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
-        //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
-    }
 
-    // BG Streets
-    for (let i=0; i<8; i++) {
-        let ele = document.createElement("span")
-        ele.id = `sBG${i+1}`
-        ele.classList.add('streetBackgrounds')
-        ele.style.position ="absolute"
-        ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
-        ele.style.backgroundSize= `${1000}px ${250}px`
-        ele.style.width = `${20000}px`
-        ele.style.height = `${streetL*2}px`
-        ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
-            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-        ele.style.zIndex = -400
-        document.getElementById("streetBGSprites").appendChild(ele)
-    }
+    cssInit();
 
-    // Street Sprites
-    for (let i=0; i<8; i++) {
-        let ele = document.createElement("span")
-        ele.id = `sBG${i+1}`
-        ele.classList.add('streetBackgrounds')
-        ele.style.position ="absolute"
-        ele.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
-        ele.style.backgroundSize = `${streetWidth}px ${200}px`
-        ele.style.width = `${streetWidth}px`
-        ele.style.height = `${204}px`;
-        ele.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
-            translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
-        ele.style.zIndex = -300
-        document.getElementById("streetSprites").appendChild(ele)
-    }
-
-    playerEle.style.width = player.sprites[playerType].w + "px"
-    playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
-    playerEle.src = player.sprites[playerType].s
-
-    launchScreen.style.display = "none"
-    gameScreen.style.display = "block"
 }
     
+
+
+
+
+
 
 
 
@@ -642,45 +815,109 @@ const keyUpdate = e => {
     if (e.type === "keydown" && launched) {
         
         if (KEYMAP.Space) {
-            if (!running && first && !startedCd) {
+            if (!isRunning && isFirst && !startedCd) {
                 coutDownAnim(3) 
-            } else if (!first) {
-                (running) ? stopGame() : runGame()
+            } else if (!isFirst) {
+                (isRunning) ? stopGame() : runGame()
             }
         }
         // Menu
-        if ((KEYMAP.KeyQ) && running) {
+        if ((KEYMAP.KeyQ) && isRunning) {
             
-        } else if ((KEYMAP.KeyE) && running) {
+        } else if ((KEYMAP.KeyE) && isRunning) {
             
-        } else if ((KEYMAP.KeyM)) {
-            if (!mute) {
+        }
+
+        // restart
+        if (gameHasEnded & KEYMAP.Space) {
+            location.reload();
+        } else if ((KEYMAP.KeyM)) {     // switch music ON / OFF
+
+            if (isMute == false) {  // music is on Turn OFF 0
                 for (a of document.getElementById("audio").children) a.volume = 0
-                mute = true
-            } else {
+                fxVol = 0;
+                sessionStorage.setItem('musicIsMuted', 1);
+                ele_musicCtrlTxt.innerText = "Unmute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+                isMute = true;
+            } else {                // music is off Turn ON 1
                 for (a of document.getElementById("audio").children) a.volume = musicVol
-                mute = false
+                fxVol = fxMaxVolume;
+                sessionStorage.setItem('musicIsMuted', 0);
+                ele_musicCtrlTxt.innerText = "Mute Sound: "; ele_musicCtrlTxt.innerHTML += "<span>M</span>";
+                isMute = false;
             }
+        }
+
+        if (KEYMAP.KeyL && TEST_MODE) {
+            document.getElementById("testSVG").innerHTML = "";
+            svgElements = [];
+        }
+
+        // Music Cheats
+        if ((KEYMAP.KeyF && KEYMAP.KeyX) && !isRunning) {
+            console.log("Cheat ZERO activated!");
+            bgMusic.src="assets/sound/DecideintheEyes.mp3";
+            playerType = 8;
+            activateCheat(boostPower);
+            changeStreet(1,2);
+        }
+        if ((KEYMAP.KeyR && KEYMAP.KeyA && KEYMAP.KeyC && KEYMAP.KeyE) && !isRunning) {
+            console.log("Cheat RACE activated!");
+            bgMusic.src="assets/sound/SonicRSuperSonicRacingMusic.mp3";
+            playerType = 10;
+            activateCheat(sonicWoa);
+            changeStreet(2,1);
+        }
+        if ((KEYMAP.Digit9 && KEYMAP.Digit0) && !isRunning) {
+            console.log("Cheat 90s activated!");
+            bgMusic.src="assets/sound/MaxCoveri-Runninginthe90s.mp3";
+            playerType = 9;
+            activateCheat(inTheBeninging);
+            changeStreet(5);
+        }
+        if ((KEYMAP.KeyR && KEYMAP.KeyB) && !isRunning) {
+            console.log("Welcome To Rainbow Road");
+            rainbowStreet = true;
+            activateCheat(reaggeHorn);
+        }
+        if ((KEYMAP.KeyE && KEYMAP.KeyN && KEYMAP.KeyD) && !isRunning) {
+            console.log("Welcome To Hell");
+            if (endlessRun == false) createEndlessRunMadness();
+            endlessRun = true;
+            activateCheat(dominating);
         }
     }
 }
 addEventListener(`keydown`, keyUpdate)
 addEventListener(`keyup`, keyUpdate)
 
+let collectionIndex = 0;
+bgMusic.onended = _=>{
+    if (endlessRun) {
+        setVolume(1);
+        killMaster[collectionIndex].play();
+        bgMusic.src = doomCollection[collectionIndex];
+        bgMusic.play();
+        collectionIndex++;
+        if (collectionIndex > doomCollection.length-1) collectionIndex = 0;
+    }
+}
+
+
+
 // ##############################################################################
 // ----------------------------- Draw ---------------------------------
 // ##############################################################################
-
-let stepper = 0
+let rainbowCounter = 0;
 function draw(step) {
     
-    /*stepper += step
-    if (stepper >= 1000) {
-        console.clear()
-        enemies.forEach(e => e.log())
-        console.log("enemies[1]","dir",enemies[1].direction,"x",enemies[1].x,"px",enemies[1].posX)
-        stepper = 0
-    }*/
+    if (TEST_MODE) {
+        let eleString = "";
+        svgElements.forEach(ele => {
+            eleString += ele;
+        });
+        document.getElementById("testSVG").innerHTML = eleString;
+    }
     
     let carMovingVal = mapRange(speed, 0, maxSpeed, 0, 10)
     let accMap = mapRange(speed, 0,maxSpeed, 2.5,0)
@@ -694,37 +931,57 @@ function draw(step) {
     distance += (speedFactor*speed)/10 // distance with decimals
     scoreEle.innerText = "Score: " + score
 
+    
+    let cdString = "";
     countdown -= step
     let min = (countdown/60000)
     let sec = (min%1) * 60
     let msec = (sec%1) * 60
-    min=min.fl();sec=sec.fl();msec=msec.fl()
-    min = min < 10 ? "0" + min : min;
-    sec = sec < 10 ? "0" + sec : sec;
-    msec = msec < 10 ? "0" + msec : msec;
-    let cdString = min+":"+sec+":"+msec
+    
+    if (endlessRun) {
+        cdString = "░HELL░▓░RUN░"
+        countdown = 696969 
+    } else {
+        min=min.fl();sec=sec.fl();msec=msec.fl()
+        min = min < 10 ? "0" + min : min;
+        sec = sec < 10 ? "0" + sec : sec;
+        msec = msec < 10 ? "0" + msec : msec;
+        cdString = min+":"+sec+":"+msec
+    }
+
     document.getElementById("countdown").innerText = cdString
 
+    if ( rainbowStreet ) {
+        rainbowCounter++;
+        if ( rainbowCounter % 20 == 0 ) {
+            if (streetProgression > ASSETS.STREET.src.length-1)
+            streetProgression = 0;
+            //console.log("Street up:",streetProgression);
+            changeStreet(streetProgression)
+            streetProgression++;
+        }
+    }
+      
 
     //paraVal = mapRange(speed, 0,maxSpeed, 0,18) //console.log(":",paraVal)
     // KEYS -----------------------------
-    if ((KEYMAP.KeyA || KEYMAP.ArrowLeft) && running) {
+    if ((KEYMAP.KeyA || KEYMAP.ArrowLeft) && isRunning) {
         playerEle.src = player.sprites[playerType].l
         if (player_X < playField[1]) player_X -= carMovingVal
         paraMoveLeft()
         //rotaY+=0.1
 
-    } else if ((KEYMAP.KeyD || KEYMAP.ArrowRight) && running) {
+    } else if ((KEYMAP.KeyD || KEYMAP.ArrowRight) && isRunning) {
         playerEle.src = player.sprites[playerType].r
         if (player_X > playField[0]) player_X += carMovingVal
         paraMoveRight()
         //rotaY-=0.1  
     } else playerEle.src = player.sprites[playerType].s
 
-    if ((KEYMAP.KeyW || KEYMAP.ArrowUp) && running) {
+    if ((KEYMAP.KeyW || KEYMAP.ArrowUp) && isRunning) {
         if (speed<maxSpeed) speed += accMap
     } else if (speed>minSpeed) speed -= friction
-    if ((KEYMAP.KeyS || KEYMAP.ArrowDown) && running) {
+    if ((KEYMAP.KeyS || KEYMAP.ArrowDown) && isRunning) {
         speed -= breakPower
     }
     if (speed < 0) speed = 0
@@ -732,13 +989,13 @@ function draw(step) {
 
 
     // dummy cars control
-    dummys.forEach(d => {d.ele.style.transform = 
-        `translateX(${d.lane-player_X*pCorr}px) translateZ(${d.pos_Z}px)`
-        d.update(speed,player_X)
-        player.collision = d.collisonDetect()
-        if (d.collisonDetect()) {
+    dummys.forEach(d => {
+        d.ele.style.transform = `translateX(${d.lane-player_X*pCorr}px) translateZ(${d.pos_Z}px)`;
+        d.update(speed,player_X);
+        player.collision = d.dumColDetection();
+        if (d.isFlying) {
             enemies.forEach(ene => {
-                ene.getHit(d.flyDir,d.nr)
+                ene.hitCheck(d)
             })
         }
     })
@@ -746,12 +1003,19 @@ function draw(step) {
     // environment assets control
     environment.forEach(env => {
         env.setZ(-1200) 
-        env.ele.style.transform = `translateX(${env.lane-(player_X*pCorr)}px) 
-            translateY(${-300}px) translateZ(${env.pos_Z+=speed*speedFactor}px)`
+        env.ele.style.transform = `translateX(${env.lane-(player_X*pCorr)}px) translateY(${-300}px) 
+            translateZ(${env.pos_Z+=speed*speedFactor}px)`
         if (env.pos_Z > 0) {
             env.pos_Z = -1200
+            // change Asset at random xx
+            //if ( (Math.random()*100).fl() < 10) {
+            //    env.ele.src = env.path[rngOf(2,3,"round")];
+            //} else {
+            //    env.ele.src = env.startImg;
+            //}
         }
     })
+    
     
     // move enemies with player and up'n'down
     enemies.forEach(ene => {
@@ -759,6 +1023,7 @@ function draw(step) {
     })
     chop+=10
 
+    
     // Street Background movement
     zArr.forEach((part,i) => {
         zArr[i] = part + speed*speedFactor
@@ -794,17 +1059,23 @@ function draw(step) {
         bg_X[1] += 0.4
     }
 
-    if (dd >= 1) {for(i=0;i<dd;i++)runGame(); dd = 0}
+    if (dd >= 1) {runGame(); dd = 0}
 
     //document.getElementById("testOut").innerText = "Dummy0: " + dummys[0].pos_Z 
 
-    if (min === "00" && sec === "00" && msec === "00") {
-        running = false
-        carBump
-        if(!mute)reduceVolume(bgMusic,0.1,100)
-        if(!mute)victoryTheme.play()
-        if(!mute)setTimeout(_=> increaseVolume(bgMusic,0.1,musicVol,100), victoryTheme.buffer.duration*850)
+    // game is over
+    //if (min === "00" && sec === "00" && msec === "00") {
+    if (min+sec+msec < 1) {
+        isRunning = false
+
+        if (sessionStorage.musicIsMuted == false && cheatIsActivated == false) {
+            reduceVolume(bgMusic,0.1,50)
+            fxVol = 0.6;
+            victoryTheme.play()
+            setTimeout(_=> increaseVolume(bgMusic,0.1,musicVol,100), victoryTheme.buffer.duration*850)
+        }
         showEndscreen(score,distance,kills)
+        gameHasEnded = true;
     }
 }
 
@@ -842,25 +1113,29 @@ function showEndscreen(score,dist,kills) {
 
     let rateTxt = ""
     if (score < 100) rateTxt="wow you suck!"
-    else if (score >= 100 && score < 2000) rateTxt="GIT GUD"
-    else if (score >= 2000 && score < 3000) rateTxt="NICE TRY"
-    else if (score >= 4000 && score < 5000) rateTxt="RAMPAGE"
-    else if (score >= 5000 && score < 6000) rateTxt="GOD LIKE"
-    else if (score >= 6000 && score < 7000) rateTxt="CHEATER"
-    else if (score >= 7000) rateTxt="no fkn chill"
+    else if (score >= 100 && score < 600) rateTxt="GIT GUD"
+    else if (score >= 600 && score < 900) rateTxt="NICE TRY"
+    else if (score >= 900 && score < 1200) rateTxt="RAMPAGE"
+    else if (score >= 1200 && score < 1400) rateTxt="GOD LIKE"
+    else if (score >= 1400 && score < 1600) rateTxt="CHEATER"
+    else if (score >= 1600 && score < 1800) rateTxt="ANGER ISSUES"
+    else if (score >= 1800 && score < 2000) rateTxt="YOU HAVE PROBLEMS"
+    else if (score >= 2000) rateTxt="!!NO FUCKING CHILL!!"
     else rateTxt="default"
     
     let textEle = document.createElement("p")
     textEle.classList.add("synthText")
+    textEle.id = "finalScoreText"
     textEle.style.position = "absolute"
     textEle.style.width = 100+"%"
     textEle.style.color = "white"
     textEle.style.zIndex = 1000
-    textEle.style.fontSize = 44+"px"
+    textEle.style.fontSize = 36+"px"
     textEle.style.textAlign = "center"
-    textEle.style.paddingTop = 10+"%"
+    textEle.style.paddingTop = 6+"%"
     textEle.style.top = 3+"%"
-    textEle.innerText =  "SCORE:\n"+score+"\nKILLS:\n"+kills+"\nDISTANCE\n"+dist.fl()+" m"+"\nRating:\n"+rateTxt
+    if (score >= 900) textEle.innerText = "SCORE:\n"+score+"\nCHOPPER KILLS:\n"+kills+"\nDISTANCE\n"+dist.fl()+" m"+"\nRating:\n"+rateTxt+"\n\nCheats unlocked! Press CTRL+U\n\nPress SPACE to try again";
+    else textEle.innerText = "SCORE:\n"+score+"\nKILLS:\n"+kills+"\nDISTANCE\n"+dist.fl()+" m"+"\nRating:\n"+rateTxt+"\n\n\n\nPress SPACE to try again";
     //textEle.innerHTML = `<p>SCORE : ${score}<br>DISTANCE : ${dist} m<br>KILLS : ${kills}</p>`
     setTimeout(_ => {
         gameScreen.appendChild(textEle)
@@ -896,29 +1171,51 @@ function getPlayer(ele) {
     playerEle.style.left = halfWidth - playerEle.width/2 + "px"
     playerEle.src = player.sprites[playerType].s
     // playPlayerSound [ele]
+    switch (playerType) {
+        case 0: // violet car
+        case 1: // pink car
+            changeStreet(0)
+            break;
+        case 3: // mario
+            changeStreet(3)
+            break;
+        case 4: // toad
+            changeStreet(1)
+            break;
+        case 2: // yellow car
+        case 5: // dk
+        case 7: // goku
+            changeStreet(4)
+            break;
+        case 6: // bowser
+            changeStreet(2)
+            break;
+        default:
+            break;
+    }
 }
 
 // start countdown
 let startedCd = false // play animation only once
 function coutDownAnim(t) {
-    if(!mute)reduceVolume(mnMusic,0.1,50)
+    reduceVolume(mnMusic,0.1,50)
     document.getElementById("startScreen").style.display = "none"
     document.getElementById("playStateNote").style.display = "none"
     let cd = document.getElementById("startCD")
 
-    if (!startedCd && !TEST_MODE && !running) {
+    if (!startedCd && !TEST_MODE && !isRunning) {
 
         let startI = setInterval(_=> {
             if (t === 0) {
                 cd.innerText = "RAMPAGE"
-                if(!mute)reaggeHorn.play()
-                if(!mute)rampage.play()
+                reaggeHorn.play()
+                rampage.play()
                 runGame()
-                first = false
+                isFirst = false
                 clearInterval(startI)
             } else {
                 cd.innerText = t
-                if(!mute)countDownSweep.play()
+                countDownSweep.play()
             }
             t--
         },1000)
@@ -952,6 +1249,12 @@ function limit(n, low, high) {return Math.max(Math.min(n, high), low);}
 
 // Random Number between min and max, with rounding type if wanted
 function rngOf(min,max,roundType) {switch (roundType) {case "floor" :return Math.floor((Math.random() * (max - min) + min));case "round" :return Math.round((Math.random() * (max - min) + min));case "ceil" :return Math.ceil((Math.random() * (max - min) + min));default :return (Math.round((Math.random() * (max - min) + min)*100))/100;}}
+/* testing
+let t = {"1":0,"2":0}
+for (let i = 0; i < 1000; i++) {
+    t[rngOf(1,2,"round")]++;
+}
+console.log(t); */
 
 function rngProperty(obj,range) {let keys = Object.keys(obj); if (range) return obj[keys[ (keys.length-range) * Math.random() << 0]];else return obj[keys[ (keys.length) * Math.random() << 0]]}
 // choose random a or b
@@ -961,9 +1264,24 @@ function easeIn(a,b,percent) { return a + (b-a)*Math.pow(percent,2)}
 function easeOut(a,b,percent) { return a + (b-a)*(1-Math.pow(1-percent,2))}
 function easeInOut(a,b,percent) { return a + (b-a)*((-Math.cos(percent*Math.PI)/2) + 0.5)}
 
+function LOG_MusicState() {console.log("Music is off =", isMute, " session is", sessionStorage.musicIsMuted);}
+
 Number.prototype.fl = function(){return Math.floor(this)}
 Object.prototype.oLenght = function() {let size = 0, key;for (key in this) {if (this.hasOwnProperty(key)) size++;}return size;}
 Array.prototype.rngValue = function(){return this[Math.floor(Math.random() * this.length)]}
+
+// Collision Detection for Rectangles with top left pivot point 
+function rectCollisionDetect(rect1, rect2) {
+    if (rect1.x < rect2.x + rect2.width &&
+      rect1.x + rect1.width > rect2.x &&
+      rect1.y < rect2.y + rect2.height &&
+      rect1.y + rect1.height > rect2.y) {
+      return true;
+    } else return false;
+  }
+
+
+
 
 
 
@@ -974,21 +1292,23 @@ Array.prototype.rngValue = function(){return this[Math.floor(Math.random() * thi
 let last = null
 function runGame() {
     //console.log("Game is running")
-    if (last) countdown = saveCD
-    running = true
-
+    
     function frame(timestamp) {
         if (!last) last = timestamp;
-        if (running) {
+        if (isRunning) {
             now = timestamp
             let delta = now - last// Math.min(1, (now - last) / 1000);
             //console.log("now:",now, "last:",last, "delta:",delta)
+            if (delta > 50) delta = 16 // if game was paused
             draw(delta)
             last = now;
             window.requestAnimationFrame(frame);
         }
     }
     window.requestAnimationFrame(frame);
+
+
+    isRunning = true
 
     if (!TEST_MODE) bgMusic.play()
     mnMusic.pause()
@@ -1003,14 +1323,11 @@ function runGame() {
 
 
 
-let saveCD = 0 // save countdown time
 function stopGame() {
     //console.log("Game stopped")
-    running = false
+    isRunning = false
 
     bgMusic.pause()
-    saveCD = countdown
-    //console.log(":",saveCD)
 
     // CSS changes
     playStateEle.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;►░PAUSE░◄"
@@ -1025,9 +1342,6 @@ function stopGame() {
 
 window.addEventListener('load', init, false);
 function init() {
-
-
-
 
 // ###############################################################################
 // ----------------------------------- SOUND ------------------------------------
@@ -1066,6 +1380,8 @@ setTimeout(_ => {
     rampage = new Sound(voiceBuffer.getSound(3))
     godLike = new Sound(voiceBuffer.getSound(4))
 
+    killMaster = [rampage,ownage,dominating,godLike]
+
     doubleKill = new Sound(voiceBuffer.getSound(5))
     tripleKill = new Sound(voiceBuffer.getSound(6))
     monsterKill = new Sound(voiceBuffer.getSound(7))
@@ -1078,11 +1394,26 @@ setTimeout(_ => {
         new Sound(voiceBuffer.getSound(12)),
     ]
 
+    doomCollection = [
+        SOUND.music[4],
+        SOUND.music[5],
+        SOUND.music[6],
+        SOUND.music[7],
+    ]
+
+    boostPower = new Sound(voiceBuffer.getSound(13));
+    sonicWoa = new Sound(voiceBuffer.getSound(14));
+    inTheBeninging = new Sound(voiceBuffer.getSound(15));
+
+    marioHonk = new Sound(voiceBuffer.getSound(16));
+    dkHonk = new Sound(voiceBuffer.getSound(17));
+    toadHonk = new Sound(voiceBuffer.getSound(18));
+
     mainTheme = new Sound(musicBuffer.getSound(0))
     menuTheme = new Sound(musicBuffer.getSound(1))
     victoryTheme = new Sound(musicBuffer.getSound(2))
 
-},1000)
+},500)
 
 bgMusic.src = SOUND.music[0]
 bgMusic.volume = musicVol
@@ -1091,26 +1422,149 @@ mnMusic.volume = musicVol
 
 }
 
-function playSound(sound,volume) {
-    sound
+// ##############################################################################
+// ------------------------------------ CSS  -----------------------------------
+// ##############################################################################
+function cssInit() {
+
+ASSETS.BG_IMAGE.level = 3
+// Parallax Background Sprites
+for (const ele in bgSprites.children) {
+    if (!isNaN(ele)) {
+        bgSprites.children[ele].style.backgroundImage=`url(${ASSETS.BG_IMAGE.src()[ele]})`
+        bgSprites.children[ele].style.top = `${0}px`
+        bgSprites.children[ele].style.width = `${2560}px`
+        bgSprites.children[ele].style.height = `${420}px`
+        bgSprites.children[ele].style.position = "absolute"
+        bgSprites.children[ele].style.left = 0
+        bgSprites.children[ele].style.backgroundSize = `${1280}px ${565}px`
+        bgSprites.children[ele].style.zIndex = (-500-parseInt(ele))
+        //bgSprites.children[ele].style.backgroundRepeat = "repeat"; 
+    } 
+    if (ele === "3") bgSprites.children[ele].style.zIndex = (-1000)
+    //else console.log("Type:",ele," | value:",bgSprites.children[ele], " | isNaN", isNaN(ele))
+}
+
+// BG Streets
+for (let i=0; i<8; i++) {
+    let ele = document.createElement("span")
+    ele.id = `sBG${i+1}`
+    ele.classList.add('streetBackgrounds')
+    ele.style.position ="absolute"
+    ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[streetType]})` 
+    ele.style.backgroundSize= `${1000}px ${250}px`
+    ele.style.width = `${20000}px`
+    ele.style.height = `${streetL*2}px`
+    ele.style.transform = `translateX(${-8000-player_X}px) translateZ(${-i*200}px) 
+        translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+    ele.style.zIndex = -400
+    document.getElementById("streetBGSprites").appendChild(ele)
+
+    // Street Sprites
+    let ele_BG = document.createElement("span")
+    ele_BG.id = `sBG${i+1}`
+    ele_BG.classList.add('streetBackgrounds')
+    ele_BG.style.position ="absolute"
+    ele_BG.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
+    ele_BG.style.backgroundSize = `${streetWidth}px ${200}px`
+    ele_BG.style.width = `${streetWidth}px`
+    ele_BG.style.height = `${204}px`;
+    ele_BG.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
+        translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+    ele_BG.style.zIndex = -300
+    document.getElementById("streetSprites").appendChild(ele_BG)
+}
+/* 
+// Street Sprites
+for (let i=0; i<8; i++) {
+    let ele_BG = document.createElement("span")
+    ele_BG.id = `sBG${i+1}`
+    ele_BG.classList.add('streetBackgrounds')
+    ele_BG.style.position ="absolute"
+    ele_BG.style.backgroundImage=`url(${ASSETS.STREET.src[streetType]})`
+    ele_BG.style.backgroundSize = `${streetWidth}px ${200}px`
+    ele_BG.style.width = `${streetWidth}px`
+    ele_BG.style.height = `${204}px`;
+    ele_BG.style.transform = `translateX(${MXM}px) translateZ(${-i*200}px) 
+        translateY(${street_Y}px) rotateX(90deg) rotateY(${0}deg)`
+    ele_BG.style.zIndex = -300
+    document.getElementById("streetSprites").appendChild(ele_BG)
+} */
+
+playerEle.style.width = player.sprites[playerType].w + "px"
+playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
+playerEle.src = player.sprites[playerType].s
+
+launchScreen.style.display = "none"
+gameScreen.style.display = "block"
+
+}
+
+function changeStreet(nrStreet, nrBG) {
+    if (typeof nrBG === "undefined") nrBG = nrStreet;
+
+    for (const ele of Array.from(document.getElementById("streetBGSprites").children)) {
+        ele.style.backgroundImage=`url(${ASSETS.STREET_BG.src[nrStreet]})`
+    }
+
+    for (const ele of Array.from(document.getElementById("streetSprites").children)) {
+        ele.style.backgroundImage=`url(${ASSETS.STREET.src[nrBG]})`
+    }
+
 }
 
 function reduceVolume(ele,rV,t) {
     let inv = setInterval(_=> {
+        ele.volume = limit(ele.volume, 0.1, 100);
         if (ele.volume <= 0.2) clearInterval(inv)
         //console.log("reduceVolume -> ele.volume", ele.volume)
         ele.volume -= rV},t)
 }
 
 function increaseVolume(ele,incV,endV,t) {
+    if (endV > 1) endV = 1;
+    let increaser = ele.volume;
     let inv = setInterval(_=> {
-        if (ele.volume >= endV-0.1) clearInterval(inv)
+        if (ele.volume >= endV-0.2) clearInterval(inv)
         //console.log("reduceVolume -> ele.volume", ele.volume)
-        ele.volume += incV},t)
+        increaser += incV;
+        if (increaser <= 1) ele.volume = increaser
+    },t)
 }
 
+function setVolume(vol) {
+    if (vol > 1) vol = 1;
+    musicVol = vol;
+    bgMusic.volume = vol
+    //mnMusic.volume = vol
+}
 
+function activateCheat(voiceSample) {
+    playerEle.src = player.sprites[playerType].s
+    playerEle.style.width = player.sprites[playerType].w + "px"
+    playerEle.style.left = halfWidth - player.sprites[playerType].w/2 + "px"
 
+    if (isMute == false) {
+        reduceVolume(mnMusic,0.1,20);
+        voiceSample.play();
+        //console.log("Lenght", voiceSample.buffer.duration);
+        setTimeout(_=> {if (startedCd == false)increaseVolume(mnMusic,0.1,musicVol,10);setVolume(1);}, voiceSample.buffer.duration*850)
+    }
+    cheatIsActivated = true;
+}
+
+function createEndlessRunMadness() {
+    for (let i=0; i<6; i++) 
+        dummys.push(new DummyCar(rngOf(30,-1200),rngProperty(lane,2),ASSETS.DUMMYCHAR))
+
+    dummys.forEach(d => {d.ele.style.transform = `translateX(${d.lane}px) translateZ(${d.pos_Z}px)`})
+
+    enemies.push(new Enemy(3))
+    enemies.push(new Enemy(2))
+    enemies.push(new Enemy(0))
+    enemies.push(new Enemy(1))
+    enemies.push(new Enemy(3))
+}
 
 // ###############################################################################
 // ----------------------------- Animations ---------------------
@@ -1140,43 +1594,22 @@ function fadeInAnim(ele,ms) {
             direction: 'alternate',
             duration: ms,
     });
-    /* OLD
-        let fadeIn = endScreen.animate(
-        {opacity: [0, 0.8]}, {
-            fill: 'forwards',
-            direction: 'alternate',
-            duration: 1000,
-        });
-    */
 }
 
+function fadeInAnimFAST(ele,ms) {
+    setTimeout( _=> {
+        ele.animate(
+            {opacity: [0, 1]}, {
+                fill: 'forwards',
+                direction: 'normal',
+                duration: ms,
+            });
+        },800)
+}
 
-/*
-Notes:
-    
-    To implement:
-        Tilt => Collision fail
-        points pop-Up ( +50 +100 )
-        point progress an Hintergrund hängen
-        -> synthwave - hirulecaste - mushroom Kingdom  lylatwars - 
-        univers galaxy - ??? big unknown
-        feuerräder burning street
-        Helicopter shots
-        Life System - Helicopter crash causes damage
-        mehr variationen von dummies
-        scoreboard -> socket.io?
-        
-    To fix:
-        Datei namen auf gross und klein schreibung überprüfen!!! ( DONE )
-        Audio failed because the user didn't interact with the document first. ( DONE )
-        doppel Space startet spiel ( DONE )
-        Countdown läuft weiter wenn stop ( DONE )
-        Countdown nicht in sekunden  
-        Class Assets = clusterFuck -< Split
-            Cristalls -> 
-            Pillar + Statues -> placeable random in group
-    
-*/
+fadeInAnimFAST(launchScreen.children[0],500);
+
+
 
 /*          LEARNED CORNER      */
 
@@ -1243,14 +1676,13 @@ for (i=0,j=0;i<pArr.length;i++,j++) {
 Photoshop skills + 9000
 
 
-Animation API not for collision detection!
+Animation API sucks for collision detection!
 
 */
 
 
-const TEST_MODE = false
 if (TEST_MODE) {
-    first = false
+    isFirst = false
     document.getElementById("test").style.display = "block"
     document.getElementById("startScreen").style.display = "none"
     document.getElementById("playStateNote").style.display = "none"
@@ -1278,9 +1710,24 @@ if (TEST_MODE) {
                 (doc && doc.clientTop  || body && body.clientTop  || 0 );
         }
         let x = event.pageX
-        let y = event.pageY - 50
-        document.getElementById("testOut").innerHTML = "x: "+x +" / "+ "y: "+ y
+        let y = event.pageY - 50 // - top bar
+        document.getElementById("testOut").innerHTML = "console: x: "+x +" / "+ "y: "+ y;
         // Use event.pageX / event.pageY here
     }
+
+
     
+}
+
+
+let svgElements = [];
+function drawLine(x1,y1,x2,y2,color) {
+    let htmlEle = "";
+    //x1 += 450;
+    //x2 += 450;
+    //y1 *= -1;
+    //y2 *= -1;
+    htmlEle = `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke=${color} stroke-width="2"/>`
+    svgElements.push(htmlEle);
+    //document.getElementById("testSVG").innerHTML += htmlEle;
 }
